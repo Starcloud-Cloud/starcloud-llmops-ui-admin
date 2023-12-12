@@ -3,14 +3,16 @@
     <Descriptions :data="detailData" :schema="allSchemas.detailSchema">
       <!-- 展示 HTML 内容 -->
       <template #templateContent="{ row }">
-        <div v-html="row.templateContent"></div>
+        <div v-dompurify-html="row.templateContent"></div>
       </template>
     </Descriptions>
   </Dialog>
 </template>
-<script lang="ts" name="SystemMailLogDetail" setup>
+<script lang="ts" setup>
 import * as MailLogApi from '@/api/system/mail/log'
 import { allSchemas } from './log.data'
+
+defineOptions({ name: 'SystemMailLogDetail' })
 
 const dialogVisible = ref(false) // 弹窗的是否展示
 const detailLoading = ref(false) // 表单的加载中

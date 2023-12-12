@@ -1,8 +1,10 @@
-<script lang="ts" name="InfoTip" setup>
+<script lang="ts" setup>
 import { PropType } from 'vue'
 import { useDesign } from '@/hooks/web/useDesign'
 import { propTypes } from '@/utils/propTypes'
 import { TipSchema } from '@/types/infoTip'
+
+defineOptions({ name: 'InfoTip' })
 
 const { getPrefixCls } = useDesign()
 
@@ -38,7 +40,7 @@ const keyClick = (key: string) => {
       <span :class="[`${prefixCls}__title`, 'pl-5px text-16px font-bold']">{{ title }}</span>
     </div>
     <div :class="`${prefixCls}__content`">
-      <p v-for="(item, $index) in schema" :key="$index" class="text-14px mt-15px">
+      <p v-for="(item, $index) in schema" :key="$index" class="mt-15px text-14px">
         <Highlight
           :color="highlightColor"
           :keys="typeof item === 'string' ? [] : item.keys"

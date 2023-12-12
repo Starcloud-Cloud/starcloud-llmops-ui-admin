@@ -8,7 +8,7 @@
         <colum-info-form ref="columInfoRef" :columns="formData.columns" />
       </el-tab-pane>
       <el-tab-pane label="生成信息" name="generateInfo">
-        <generate-info-form ref="generateInfoRef" :table="formData.table" />
+        <generate-info-form ref="generateInfoRef" :table="formData.table" :columns="formData.columns" />
       </el-tab-pane>
     </el-tabs>
     <el-form>
@@ -19,10 +19,12 @@
     </el-form>
   </ContentWrap>
 </template>
-<script lang="ts" name="InfraCodegenEditTable" setup>
+<script lang="ts" setup>
 import { useTagsViewStore } from '@/store/modules/tagsView'
 import { BasicInfoForm, ColumInfoForm, GenerateInfoForm } from './components'
 import * as CodegenApi from '@/api/infra/codegen'
+
+defineOptions({ name: 'InfraCodegenEditTable' })
 
 const { t } = useI18n() // 国际化
 const message = useMessage() // 消息弹窗

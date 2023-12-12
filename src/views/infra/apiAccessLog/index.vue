@@ -46,7 +46,7 @@
       <el-form-item label="请求时间" prop="beginTime">
         <el-date-picker
           v-model="queryParams.beginTime"
-          value-format="yyyy-MM-dd HH:mm:ss"
+          value-format="YYYY-MM-DD HH:mm:ss"
           type="daterange"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
@@ -139,12 +139,15 @@
   <!-- 表单弹窗：详情 -->
   <ApiAccessLogDetail ref="detailRef" />
 </template>
-<script setup lang="ts" name="InfraApiAccessLog">
+<script lang="ts" setup>
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
 import download from '@/utils/download'
 import { formatDate } from '@/utils/formatTime'
 import * as ApiAccessLogApi from '@/api/infra/apiAccessLog'
 import ApiAccessLogDetail from './ApiAccessLogDetail.vue'
+
+defineOptions({ name: 'InfraApiAccessLog' })
+
 const message = useMessage() // 消息弹窗
 
 const loading = ref(true) // 列表的加载中

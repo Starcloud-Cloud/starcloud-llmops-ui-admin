@@ -1,4 +1,4 @@
-<script lang="ts" name="Setting" setup>
+<script lang="ts" setup>
 import { ElMessage } from 'element-plus'
 import { useClipboard, useCssVar } from '@vueuse/core'
 
@@ -12,6 +12,8 @@ import { ThemeSwitch } from '@/layout/components/ThemeSwitch'
 import ColorRadioPicker from './components/ColorRadioPicker.vue'
 import InterfaceDisplay from './components/InterfaceDisplay.vue'
 import LayoutRadioPicker from './components/LayoutRadioPicker.vue'
+
+defineOptions({ name: 'Setting' })
 
 const { t } = useI18n()
 const appStore = useAppStore()
@@ -42,7 +44,6 @@ const setHeaderTheme = (color: string) => {
   setCssVar('--top-header-bg-color', color)
   setCssVar('--top-header-text-color', textColor)
   setCssVar('--top-header-hover-color', textHoverColor)
-  setCssVar('--top-tool-border-color', topToolBorderColor)
   appStore.setTheme({
     topHeaderBgColor: color,
     topHeaderTextColor: textColor,
@@ -199,7 +200,7 @@ const clear = () => {
 <template>
   <div
     :class="prefixCls"
-    class="fixed top-[45%] right-0 w-40px h-40px text-center leading-40px bg-[var(--el-color-primary)] cursor-pointer"
+    class="fixed right-0 top-[45%] h-40px w-40px cursor-pointer bg-[var(--el-color-primary)] text-center leading-40px"
     @click="drawer = true"
   >
     <Icon color="#fff" icon="ep:setting" />

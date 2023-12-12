@@ -8,11 +8,10 @@ const include = [
   'pinia',
   'dayjs',
   'qrcode',
-  'windicss',
+  'unocss',
   'vue-router',
   'vue-types',
   'vue-i18n',
-  'xe-utils',
   'crypto-js',
   'cropperjs',
   'lodash-es',
@@ -32,6 +31,8 @@ const include = [
   'element-plus/es',
   'element-plus/es/locale/lang/zh-cn',
   'element-plus/es/locale/lang/en',
+  'element-plus/es/components/avatar/style/css',
+  'element-plus/es/components/space/style/css',
   'element-plus/es/components/backtop/style/css',
   'element-plus/es/components/form/style/css',
   'element-plus/es/components/radio-group/style/css',
@@ -102,7 +103,8 @@ const include = [
   'element-plus/es/components/timeline-item/style/css',
   'element-plus/es/components/collapse/style/css',
   'element-plus/es/components/collapse-item/style/css',
-  'element-plus/es/components/button-group/style/css'
+  'element-plus/es/components/button-group/style/css',
+  'element-plus/es/components/text/style/css'
 ]
 
 const exclude = ['@iconify/json']

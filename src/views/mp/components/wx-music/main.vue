@@ -25,7 +25,9 @@
   </div>
 </template>
 
-<script setup lang="ts" name="WxMusic">
+<script lang="ts" setup>
+defineOptions({ name: 'WxMusic' })
+
 const props = defineProps({
   title: {
     required: false,
@@ -55,6 +57,6 @@ defineExpose({
 </script>
 
 <style lang="scss" scoped>
-/* 因为 joolun 实现依赖 avue 组件，该页面使用了 card.scc  */
+/* 因为 joolun 实现依赖 avue 组件，该页面使用了 card.scss  */
 @import url('../wx-msg/card.scss');
 </style>

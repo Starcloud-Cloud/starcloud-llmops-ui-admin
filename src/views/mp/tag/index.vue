@@ -82,11 +82,13 @@
   <!-- 表单弹窗：添加/修改 -->
   <TagForm ref="formRef" @success="getList" />
 </template>
-<script setup lang="ts" name="MpTag">
+<script lang="ts" setup>
 import { dateFormatter } from '@/utils/formatTime'
 import * as MpTagApi from '@/api/mp/tag'
 import TagForm from './TagForm.vue'
 import WxAccountSelect from '@/views/mp/components/wx-account-select'
+
+defineOptions({ name: 'MpTag' })
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
@@ -95,23 +97,18 @@ const loading = ref(true) // 列表的加载中
 const total = ref(0) // 列表的总页数
 const list = ref<any[]>([]) // 列表的数据
 
-interface QueryParams {
-  pageNo: number
-  pageSize: number
-  accountId: number
-}
-const queryParams: QueryParams = reactive({
+const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
-  accountId: 0
+  accountId: -1
 })
 
 const formRef = ref<InstanceType<typeof TagForm> | null>(null)
 
 /** 侦听公众号变化 **/
 const onAccountChanged = (id: number) => {
-  queryParams.pageNo = 1
   queryParams.accountId = id
+  queryParams.pageNo = 1
   getList()
 }
 

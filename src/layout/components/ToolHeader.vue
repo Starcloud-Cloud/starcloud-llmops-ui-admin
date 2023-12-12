@@ -7,6 +7,7 @@ import { Screenfull } from '@/layout/components/Screenfull'
 import { Breadcrumb } from '@/layout/components/Breadcrumb'
 import { SizeDropdown } from '@/layout/components/SizeDropdown'
 import { LocaleDropdown } from '@/layout/components/LocaleDropdown'
+import RouterSearch from '@/components/RouterSearch/index.vue'
 import { useAppStore } from '@/store/modules/app'
 import { useDesign } from '@/hooks/web/useDesign'
 
@@ -24,6 +25,9 @@ const hamburger = computed(() => appStore.getHamburger)
 
 // 全屏图标
 const screenfull = computed(() => appStore.getScreenfull)
+
+// 搜索图片
+const search = computed(() => appStore.search)
 
 // 尺寸图标
 const size = computed(() => appStore.getSize)
@@ -52,28 +56,29 @@ export default defineComponent({
         {layout.value !== 'top' ? (
           <div class="h-full flex items-center">
             {hamburger.value && layout.value !== 'cutMenu' ? (
-              <Collapse class="hover-trigger" color="var(--top-header-text-color)"></Collapse>
+              <Collapse class="custom-hover" color="var(--top-header-text-color)"></Collapse>
             ) : undefined}
-            {breadcrumb.value ? <Breadcrumb class="<md:hidden"></Breadcrumb> : undefined}
+            {breadcrumb.value ? <Breadcrumb class="lt-md:hidden"></Breadcrumb> : undefined}
           </div>
         ) : undefined}
         <div class="h-full flex items-center">
           {screenfull.value ? (
-            <Screenfull class="hover-trigger" color="var(--top-header-text-color)"></Screenfull>
+            <Screenfull class="custom-hover" color="var(--top-header-text-color)"></Screenfull>
           ) : undefined}
+          {search.value ? (<RouterSearch isModal={false} />) : undefined}
           {size.value ? (
-            <SizeDropdown class="hover-trigger" color="var(--top-header-text-color)"></SizeDropdown>
+            <SizeDropdown class="custom-hover" color="var(--top-header-text-color)"></SizeDropdown>
           ) : undefined}
           {locale.value ? (
             <LocaleDropdown
-              class="hover-trigger"
+              class="custom-hover"
               color="var(--top-header-text-color)"
             ></LocaleDropdown>
           ) : undefined}
           {message.value ? (
-            <Message class="hover-trigger" color="var(--top-header-text-color)"></Message>
+            <Message class="custom-hover" color="var(--top-header-text-color)"></Message>
           ) : undefined}
-          <UserInfo class="hover-trigger"></UserInfo>
+          <UserInfo></UserInfo>
         </div>
       </div>
     )

@@ -1,8 +1,10 @@
-<script lang="ts" name="LocaleDropdown" setup>
+<script lang="ts" setup>
 import { useLocaleStore } from '@/store/modules/locale'
 import { useLocale } from '@/hooks/web/useLocale'
 import { propTypes } from '@/utils/propTypes'
 import { useDesign } from '@/hooks/web/useDesign'
+
+defineOptions({ name: 'LocaleDropdown' })
 
 const { getPrefixCls } = useDesign()
 
@@ -36,7 +38,7 @@ const setLang = (lang: LocaleType) => {
       :class="$attrs.class"
       :color="color"
       :size="18"
-      class="cursor-pointer"
+      class="cursor-pointer !p-0"
       icon="ion:language-sharp"
     />
     <template #dropdown>

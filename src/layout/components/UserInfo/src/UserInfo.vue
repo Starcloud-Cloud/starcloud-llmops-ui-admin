@@ -1,4 +1,4 @@
-<script lang="ts" name="UserInfo" setup>
+<script lang="ts" setup>
 import { ElMessageBox } from 'element-plus'
 
 import { CACHE_KEY, useCache } from '@/hooks/web/useCache'
@@ -6,6 +6,8 @@ import { useDesign } from '@/hooks/web/useDesign'
 import avatarImg from '@/assets/imgs/avatar.gif'
 import { useUserStore } from '@/store/modules/user'
 import { useTagsViewStore } from '@/store/modules/tagsView'
+
+defineOptions({ name: 'UserInfo' })
 
 const { t } = useI18n()
 
@@ -49,10 +51,10 @@ const toDocument = () => {
 </script>
 
 <template>
-  <ElDropdown :class="prefixCls" trigger="click">
+  <ElDropdown class="custom-hover" :class="prefixCls" trigger="click">
     <div class="flex items-center">
-      <img :src="avatar" alt="" class="w-[calc(var(--logo-height)-25px)] rounded-[50%]" />
-      <span class="<lg:hidden text-14px pl-[5px] text-[var(--top-header-text-color)]">
+      <ElAvatar :src="avatar" alt="" class="w-[calc(var(--logo-height)-25px)] rounded-[50%]" />
+      <span class="pl-[5px] text-14px text-[var(--top-header-text-color)] <lg:hidden">
         {{ userName }}
       </span>
     </div>

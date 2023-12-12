@@ -125,7 +125,7 @@
         width="180"
         :formatter="dateFormatter"
       />
-      <el-table-column label="绑定域名" align="center" prop="domain" width="180" />
+      <el-table-column label="绑定域名" align="center" prop="website" width="180" />
       <el-table-column label="租户状态" align="center" prop="status">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.status" />
@@ -171,13 +171,16 @@
   <!-- 表单弹窗：添加/修改 -->
   <TenantForm ref="formRef" @success="getList" />
 </template>
-<script setup lang="ts" name="SystemTenant">
+<script lang="ts" setup>
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
 import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import * as TenantApi from '@/api/system/tenant'
 import * as TenantPackageApi from '@/api/system/tenantPackage'
 import TenantForm from './TenantForm.vue'
+
+defineOptions({ name: 'SystemTenant' })
+
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 

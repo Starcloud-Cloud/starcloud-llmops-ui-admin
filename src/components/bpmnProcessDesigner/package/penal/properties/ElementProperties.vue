@@ -1,22 +1,23 @@
 <template>
   <div class="panel-tab__content">
-    <el-table :data="elementPropertyList" max-height="240" border fit>
+    <el-table :data="elementPropertyList" max-height="240" fit border>
       <el-table-column label="序号" width="50px" type="index" />
       <el-table-column label="属性名" prop="name" min-width="100px" show-overflow-tooltip />
       <el-table-column label="属性值" prop="value" min-width="100px" show-overflow-tooltip />
       <el-table-column label="操作" width="110px">
         <template #default="scope">
-          <el-button link @click="openAttributesForm(scope.row, scope.$index)" size="small"
-            >编辑</el-button
-          >
+          <el-button link @click="openAttributesForm(scope.row, scope.$index)" size="small">
+            编辑
+          </el-button>
           <el-divider direction="vertical" />
           <el-button
             link
             size="small"
             style="color: #ff4d4f"
             @click="removeAttributes(scope.row, scope.$index)"
-            >移除</el-button
           >
+            移除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -52,8 +53,9 @@
   </div>
 </template>
 
-<script setup lang="ts" name="ElementProperties">
+<script lang="ts" setup>
 import { ElMessageBox } from 'element-plus'
+defineOptions({ name: 'ElementProperties' })
 const props = defineProps({
   id: String,
   type: String

@@ -1,6 +1,8 @@
-<script lang="ts" name="Message" setup>
+<script lang="ts" setup>
 import { formatDate } from '@/utils/formatTime'
 import * as NotifyMessageApi from '@/api/system/notify/message'
+
+defineOptions({ name: 'Message' })
 
 const { push } = useRouter()
 const activeName = ref('notice')
@@ -33,9 +35,12 @@ onMounted(() => {
   // 首次加载小红点
   getUnreadCount()
   // 轮询刷新小红点
-  setInterval(() => {
-    getUnreadCount()
-  }, 1000 * 60 * 2)
+  setInterval(
+    () => {
+      getUnreadCount()
+    },
+    1000 * 60 * 2
+  )
 })
 </script>
 <template>
@@ -48,7 +53,7 @@ onMounted(() => {
       </template>
       <ElTabs v-model="activeName">
         <ElTabPane label="我的站内信" name="notice">
-          <div class="message-list">
+          <el-scrollbar class="message-list">
             <template v-for="item in list" :key="item.id">
               <div class="message-item">
                 <img alt="" class="message-icon" src="@/assets/imgs/avatar.gif" />
@@ -62,11 +67,11 @@ onMounted(() => {
                 </div>
               </div>
             </template>
-          </div>
+          </el-scrollbar>
         </ElTabPane>
       </ElTabs>
       <!-- 更多 -->
-      <div style="text-align: right; margin-top: 10px">
+      <div style="margin-top: 10px; text-align: right">
         <XButton preIcon="ep:view" title="查看全部" type="primary" @click="goMyList" />
       </div>
     </ElPopover>
@@ -84,6 +89,7 @@ onMounted(() => {
 
 .message-list {
   display: flex;
+  height: 400px;
   flex-direction: column;
 
   .message-item {

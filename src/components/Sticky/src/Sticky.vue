@@ -1,7 +1,9 @@
-<script lang="ts" name="Sticky" setup>
+<script lang="ts" setup>
 import { propTypes } from '@/utils/propTypes'
 import { isClient, useEventListener, useWindowSize } from '@vueuse/core'
 import type { CSSProperties } from 'vue'
+
+defineOptions({ name: 'Sticky' })
 
 const props = defineProps({
   // 距离顶部或者底部的距离(单位px)
@@ -30,7 +32,7 @@ onMounted(() => {
 
   scrollContainer.value = getScrollContainer(refSticky.value!, true)
   useEventListener(scrollContainer, 'scroll', handleScroll)
-  useEventListener('resize', handleReize)
+  useEventListener('resize', handleResize)
   handleScroll()
 })
 onActivated(() => {
@@ -101,7 +103,7 @@ const handleScroll = () => {
     reset()
   }
 }
-const handleReize = () => {
+const handleResize = () => {
   if (isSticky.value && refSticky.value) {
     width.value = refSticky.value.getBoundingClientRect().width + 'px'
   }

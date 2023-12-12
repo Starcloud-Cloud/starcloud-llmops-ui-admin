@@ -1,7 +1,9 @@
-<script lang="ts" name="IconSelect" setup>
+<script lang="ts" setup>
 import { CSSProperties } from 'vue'
 import { cloneDeep } from 'lodash-es'
 import { IconJson } from '@/components/Icon/src/data'
+
+defineOptions({ name: 'IconSelect' })
 
 type ParameterCSSProperties = (item?: string) => CSSProperties | undefined
 
@@ -126,7 +128,7 @@ watch(
         >
           <template #reference>
             <div
-              class="w-40px h-32px cursor-pointer flex justify-center items-center"
+              class="h-32px w-40px flex cursor-pointer items-center justify-center"
               @click="visible = !visible"
             >
               <Icon :icon="currentActiveType + icon" />
@@ -145,13 +147,13 @@ watch(
             >
               <ElDivider border-style="dashed" class="tab-divider" />
               <ElScrollbar height="220px">
-                <ul class="flex flex-wrap px-2 ml-2">
+                <ul class="ml-2 flex flex-wrap px-2">
                   <li
                     v-for="(item, key) in pageList"
                     :key="key"
                     :style="iconItemStyle(item)"
                     :title="item"
-                    class="icon-item p-2 w-1/10 cursor-pointer mr-2 mt-1 flex justify-center items-center border border-solid"
+                    class="icon-item mr-2 mt-1 w-1/10 flex cursor-pointer items-center justify-center border border-solid p-2"
                     @click="onChangeIcon(item)"
                   >
                     <Icon :icon="currentActiveType + item" />
@@ -167,7 +169,7 @@ watch(
             :page-size="pageSize"
             :total="iconCount"
             background
-            class="flex items-center justify-center h-10"
+            class="h-10 flex items-center justify-center"
             layout="prev, pager, next"
             small
             @current-change="onCurrentChange"
@@ -189,10 +191,10 @@ watch(
 
 .icon-item {
   &:hover {
-    border-color: var(--el-color-primary);
     color: var(--el-color-primary);
-    transition: all 0.4s;
+    border-color: var(--el-color-primary);
     transform: scaleX(1.05);
+    transition: all 0.4s;
   }
 }
 
@@ -213,15 +215,15 @@ watch(
 }
 
 :deep(.el-tabs__item) {
+  height: 30px;
   font-size: 12px;
   font-weight: normal;
-  height: 30px;
   line-height: 30px;
 }
 
 :deep(.el-tabs__header),
 :deep(.el-tabs__nav-wrap) {
-  margin: 0;
   position: static;
+  margin: 0;
 }
 </style>

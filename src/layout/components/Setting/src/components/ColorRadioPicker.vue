@@ -1,7 +1,9 @@
-<script lang="ts" name="ColorRadioPicker" setup>
+<script lang="ts" setup>
 import { PropType } from 'vue'
 import { propTypes } from '@/utils/propTypes'
 import { useDesign } from '@/hooks/web/useDesign'
+
+defineOptions({ name: 'ColorRadioPicker' })
 
 const { getPrefixCls } = useDesign()
 
@@ -46,7 +48,7 @@ watch(
       :style="{
         background: item
       }"
-      class="w-20px h-20px cursor-pointer rounded-2px border-solid border-gray-300 border-2px text-center leading-20px mb-5px"
+      class="mb-5px h-20px w-20px cursor-pointer border-2px border-gray-300 rounded-2px border-solid text-center leading-20px"
       @click="colorVal = item"
     >
       <Icon v-if="colorVal === item" :size="16" color="#fff" icon="ep:check" />

@@ -41,3 +41,41 @@ export const getTaskListByProcessInstanceId = async (processInstanceId) => {
 export const exportTask = async (params) => {
   return await request.download({ url: '/bpm/task/export', params })
 }
+
+// 获取所有可回退的节点
+export const getReturnList = async (params) => {
+  return await request.get({ url: '/bpm/task/get-return-list', params })
+}
+
+// 回退
+export const returnTask = async (data) => {
+  return await request.put({ url: '/bpm/task/return', data })
+}
+
+/**
+ * 委派
+ */
+export const delegateTask = async (data) => {
+  return await request.put({ url: '/bpm/task/delegate', data })
+}
+
+/**
+ * 加签
+ */
+export const taskAddSign = async (data) => {
+  return await request.put({ url: '/bpm/task/create-sign', data })
+}
+
+/**
+ * 获取减签任务列表
+ */
+export const getChildrenTaskList = async (id: string) => {
+  return await request.get({ url: '/bpm/task/children-list?taskId=' + id })
+}
+
+/**
+ * 减签
+ */
+export const taskSubSign = async (data) => {
+  return await request.delete({ url: '/bpm/task/delete-sign', data })
+}

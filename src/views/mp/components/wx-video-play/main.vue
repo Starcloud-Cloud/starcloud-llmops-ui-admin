@@ -26,8 +26,8 @@
         :src="props.url"
         poster=""
         crossorigin="anonymous"
-        playsinline
         controls
+        playsinline
         :volume="0.6"
         :width="800"
         :playback-rates="[0.7, 1.0, 1.5, 2.0]"
@@ -48,9 +48,11 @@
   </div>
 </template>
 
-<script setup lang="ts" name="WxVideoPlayer">
+<script lang="ts" setup>
 import 'video.js/dist/video-js.css'
 import { VideoPlayer } from '@videojs-player/vue'
+
+defineOptions({ name: 'WxVideoPlayer' })
 
 const props = defineProps({
   url: {

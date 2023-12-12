@@ -1,9 +1,11 @@
-<script lang="ts" name="InputPassword" setup>
+<script lang="ts" setup>
 import { propTypes } from '@/utils/propTypes'
 import { useConfigGlobal } from '@/hooks/web/useConfigGlobal'
 import type { ZxcvbnResult } from '@zxcvbn-ts/core'
 import { zxcvbn } from '@zxcvbn-ts/core'
 import { useDesign } from '@/hooks/web/useDesign'
+
+defineOptions({ name: 'InputPassword' })
 
 const { getPrefixCls } = useDesign()
 
@@ -65,7 +67,7 @@ const getIconName = computed(() => (unref(textType) === 'password' ? 'ep:hide' :
     <div
       v-if="strength"
       :class="`${prefixCls}__bar`"
-      class="relative h-6px mt-10px mb-6px mr-auto ml-auto"
+      class="relative mb-6px ml-auto mr-auto mt-10px h-6px"
     >
       <div :class="`${prefixCls}__bar--fill`" :data-score="getPasswordStrength"></div>
     </div>
@@ -94,7 +96,7 @@ $prefix-cls: #{$namespace}-input-password;
       background-color: transparent;
       border-color: var(--el-color-white);
       border-style: solid;
-      border-width: 0 5px 0 5px;
+      border-width: 0 5px;
       content: '';
     }
 
@@ -112,7 +114,9 @@ $prefix-cls: #{$namespace}-input-password;
       height: inherit;
       background-color: transparent;
       border-radius: inherit;
-      transition: width 0.5s ease-in-out, background 0.25s;
+      transition:
+        width 0.5s ease-in-out,
+        background 0.25s;
 
       &[data-score='0'] {
         width: 20%;

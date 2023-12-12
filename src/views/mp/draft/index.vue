@@ -61,7 +61,7 @@
   </el-dialog>
 </template>
 
-<script setup lang="ts" name="MpDraft">
+<script lang="ts" setup>
 import WxAccountSelect from '@/views/mp/components/wx-account-select'
 import * as MpDraftApi from '@/api/mp/draft'
 import * as MpFreePublishApi from '@/api/mp/freePublish'
@@ -74,32 +74,21 @@ import {
 } from './components/'
 // import drafts from './mock' // 可以用改本地数据模拟，避免API调用超限
 
+defineOptions({ name: 'MpDraft' })
+
 const message = useMessage() // 消息
 
-const accountId = ref<number>(0)
+const accountId = ref(-1)
 provide('accountId', accountId)
 
 const loading = ref(true) // 列表的加载中
 const list = ref<any[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
-interface QueryParams {
-  pageNo: number
-  pageSize: number
-  accountId: number
-}
-const queryParams: QueryParams = reactive({
+
+const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
-  accountId: 0
-})
-
-interface UploadData {
-  type: 'image' | 'video' | 'audio'
-  accountId: number
-}
-const uploadData: UploadData = reactive({
-  type: 'image',
-  accountId: 0
+  accountId: accountId
 })
 
 // ========== 草稿新建 or 修改 ==========
@@ -111,7 +100,8 @@ const isSubmitting = ref(false)
 
 /** 侦听公众号变化 **/
 const onAccountChanged = (id: number) => {
-  setAccountId(id)
+  accountId.value = id
+  queryParams.pageNo = 1
   getList()
 }
 
@@ -124,12 +114,6 @@ const onBeforeDialogClose = async (onDone: () => {}) => {
 }
 
 // ======================== 列表查询 ========================
-/** 设置账号编号 */
-const setAccountId = (id: number) => {
-  queryParams.accountId = id
-  uploadData.accountId = id
-}
-
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
@@ -170,10 +154,10 @@ const onSubmitNewsItem = async () => {
   isSubmitting.value = true
   try {
     if (isCreating.value) {
-      await MpDraftApi.createDraft(queryParams.accountId, newsList.value)
+      await MpDraftApi.createDraft(accountId.value, newsList.value)
       message.notifySuccess('新增成功')
     } else {
-      await MpDraftApi.updateDraft(queryParams.accountId, mediaId.value, newsList.value)
+      await MpDraftApi.updateDraft(accountId.value, mediaId.value, newsList.value)
       message.notifySuccess('更新成功')
     }
   } finally {
@@ -185,7 +169,6 @@ const onSubmitNewsItem = async () => {
 
 // ======================== 草稿箱发布 ========================
 const onPublish = async (item: Article) => {
-  const accountId = queryParams.accountId
   const mediaId = item.mediaId
   const content =
     '你正在通过发布的方式发表内容。 发布不占用群发次数，一天可多次发布。' +
@@ -193,7 +176,7 @@ const onPublish = async (item: Article) => {
     '发布后，你可以前往发表记录获取链接，也可以将发布内容添加到自定义菜单、自动回复、话题和页面模板中。'
   try {
     await message.confirm(content)
-    await MpFreePublishApi.submitFreePublish(accountId, mediaId)
+    await MpFreePublishApi.submitFreePublish(accountId.value, mediaId)
     message.notifySuccess('发布成功')
     await getList()
   } catch {}
@@ -201,11 +184,10 @@ const onPublish = async (item: Article) => {
 
 /** 删除按钮操作 */
 const onDelete = async (item: Article) => {
-  const accountId = queryParams.accountId
   const mediaId = item.mediaId
   try {
     await message.confirm('此操作将永久删除该草稿, 是否继续?')
-    await MpDraftApi.deleteDraft(accountId, mediaId)
+    await MpDraftApi.deleteDraft(accountId.value, mediaId)
     message.notifySuccess('删除成功')
     await getList()
   } catch {}

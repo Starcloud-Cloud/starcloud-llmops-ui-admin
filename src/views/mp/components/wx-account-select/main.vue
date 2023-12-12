@@ -4,17 +4,20 @@
   </el-select>
 </template>
 
-<script lang="ts" setup name="WxAccountSelect">
+<script lang="ts" setup>
 import * as MpAccountApi from '@/api/mp/account'
 
+defineOptions({ name: 'WxAccountSelect' })
+
 const account: MpAccountApi.AccountVO = reactive({
-  id: undefined,
+  id: -1,
   name: ''
 })
-const accountList: Ref<MpAccountApi.AccountVO[]> = ref([])
+
+const accountList = ref<MpAccountApi.AccountVO[]>([])
 
 const emit = defineEmits<{
-  (e: 'change', id: number, name: string): void
+  (e: 'change', id: number, name: string)
 }>()
 
 const handleQuery = async () => {

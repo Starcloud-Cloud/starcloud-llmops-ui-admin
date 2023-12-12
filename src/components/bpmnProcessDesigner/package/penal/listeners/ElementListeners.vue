@@ -139,8 +139,8 @@
         :data="fieldsListOfListener"
         size="small"
         max-height="240"
-        border
         fit
+        border
         style="flex: none"
       >
         <el-table-column label="序号" width="50px" type="index" />
@@ -241,10 +241,13 @@
     </el-dialog>
   </div>
 </template>
-<script setup lang="ts" name="ElementListeners">
+<script lang="ts" setup>
 import { ElMessageBox } from 'element-plus'
 import { createListenerObject, updateElementExtensions } from '../../utils'
 import { initListenerType, initListenerForm, listenerType, fieldType } from './utilSelf'
+
+defineOptions({ name: 'ElementListeners' })
+
 const props = defineProps({
   id: String,
   type: String

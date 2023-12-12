@@ -1,6 +1,3 @@
-META-INF
-.vscode
-.pnpm-store
 node_modules
 .DS_Store
 dist

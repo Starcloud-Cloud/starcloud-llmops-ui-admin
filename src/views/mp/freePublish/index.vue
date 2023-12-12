@@ -48,10 +48,13 @@
   </ContentWrap>
 </template>
 
-<script lang="ts" setup name="MpFreePublish">
+<script lang="ts" setup>
 import * as FreePublishApi from '@/api/mp/freePublish'
 import WxNews from '@/views/mp/components/wx-news'
 import WxAccountSelect from '@/views/mp/components/wx-account-select'
+
+defineOptions({ name: 'MpFreePublish' })
+
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 
@@ -59,20 +62,16 @@ const loading = ref(true) // 列表的加载中
 const total = ref(0) // 列表的总页数
 const list = ref<any[]>([]) // 列表的数据
 
-interface QueryParams {
-  pageNo: number
-  pageSize: number
-  accountId: number
-}
-const queryParams: QueryParams = reactive({
+const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
-  accountId: 0
+  accountId: -1
 })
 
 /** 侦听公众号变化 **/
 const onAccountChanged = (id: number) => {
   queryParams.accountId = id
+  queryParams.pageNo = 1
   getList()
 }
 
@@ -102,7 +101,7 @@ const handleDelete = async (item: any) => {
 }
 </script>
 <style lang="scss" scoped>
-@media (min-width: 992px) and (max-width: 1300px) {
+@media (width >= 992px) and (width <= 1300px) {
   .waterfall {
     column-count: 3;
   }
@@ -112,7 +111,7 @@ const handleDelete = async (item: any) => {
   }
 }
 
-@media (min-width: 768px) and (max-width: 991px) {
+@media (width >= 768px) and (width <= 991px) {
   .waterfall {
     column-count: 2;
   }
@@ -122,7 +121,7 @@ const handleDelete = async (item: any) => {
   }
 }
 
-@media (max-width: 767px) {
+@media (width <= 767px) {
   .waterfall {
     column-count: 1;
   }

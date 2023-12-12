@@ -29,13 +29,13 @@
           @click="loginRegister()"
         />
       </div>
-      <div class="w-[100%] mt-15px">
+      <div class="mt-15px w-[100%]">
         <XButton :title="t('login.hasUser')" class="w-[100%]" @click="handleBackLogin()" />
       </div>
     </template>
   </Form>
 </template>
-<script lang="ts" name="RegisterForm" setup>
+<script lang="ts" setup>
 import type { FormRules } from 'element-plus'
 
 import { useForm } from '@/hooks/web/useForm'
@@ -43,6 +43,8 @@ import { useValidator } from '@/hooks/web/useValidator'
 import LoginFormTitle from './LoginFormTitle.vue'
 import { LoginStateEnum, useLoginState } from './useLogin'
 import { FormSchema } from '@/types/form'
+
+defineOptions({ name: 'RegisterForm' })
 
 const { t } = useI18n()
 const { required } = useValidator()

@@ -17,7 +17,7 @@
           ref="canvas"
           :src="'data:image/png;base64,' + pointBackImgBase"
           alt=""
-          style="width: 100%; height: 100%; display: block"
+          style="display: block; width: 100%; height: 100%"
           @click="bindingClick ? canvasClick($event) : undefined"
         />
 
@@ -57,7 +57,7 @@
     </div>
   </div>
 </template>
-<script name="VerifyPoints" setup type="text/babel">
+<script setup type="text/babel">
 /**
  * VerifyPoints
  * @description 点选

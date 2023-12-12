@@ -5,8 +5,10 @@
   </div>
 </template>
 
-<script setup lang="ts" name="MyProcessPalette">
+<script lang="ts" setup>
 import { assign } from 'min-dash'
+
+defineOptions({ name: 'MyProcessPalette' })
 
 const bpmnInstances = () => (window as any).bpmnInstances
 const addTask = (event, options: any = {}) => {
@@ -29,14 +31,15 @@ const addTask = (event, options: any = {}) => {
 
 <style scoped lang="scss">
 .my-process-palette {
+  padding: 80px 20px 20px;
   box-sizing: border-box;
-  padding: 80px 20px 20px 20px;
+
   .test-button {
-    box-sizing: border-box;
     padding: 8px 16px;
-    border-radius: 4px;
-    border: 1px solid rgba(24, 144, 255, 0.8);
     cursor: pointer;
+    border: 1px solid rgb(24 144 255 / 80%);
+    border-radius: 4px;
+    box-sizing: border-box;
   }
 }
 </style>

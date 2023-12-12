@@ -9,24 +9,24 @@
     label-width="120px"
     size="large"
   >
-    <el-row style="maring-left: -10px; maring-right: -10px">
-      <el-col :span="24" style="padding-left: 10px; padding-right: 10px">
+    <el-row style="margin-right: -10px; margin-left: -10px">
+      <el-col :span="24" style="padding-right: 10px; padding-left: 10px">
         <el-form-item>
           <LoginFormTitle style="width: 100%" />
         </el-form-item>
       </el-col>
-      <el-col :span="24" style="padding-left: 10px; padding-right: 10px">
+      <el-col :span="24" style="padding-right: 10px; padding-left: 10px">
         <el-form-item v-if="loginData.tenantEnable === 'true'" prop="tenantName">
           <el-input
             v-model="loginData.loginForm.tenantName"
             :placeholder="t('login.tenantNamePlaceholder')"
             :prefix-icon="iconHouse"
-            type="primary"
             link
+            type="primary"
           />
         </el-form-item>
       </el-col>
-      <el-col :span="24" style="padding-left: 10px; padding-right: 10px">
+      <el-col :span="24" style="padding-right: 10px; padding-left: 10px">
         <el-form-item prop="username">
           <el-input
             v-model="loginData.loginForm.username"
@@ -35,7 +35,7 @@
           />
         </el-form-item>
       </el-col>
-      <el-col :span="24" style="padding-left: 10px; padding-right: 10px">
+      <el-col :span="24" style="padding-right: 10px; padding-left: 10px">
         <el-form-item prop="password">
           <el-input
             v-model="loginData.loginForm.password"
@@ -49,7 +49,7 @@
       </el-col>
       <el-col
         :span="24"
-        style="padding-left: 10px; padding-right: 10px; margin-top: -20px; margin-bottom: -20px"
+        style="padding-right: 10px; padding-left: 10px; margin-top: -20px; margin-bottom: -20px"
       >
         <el-form-item>
           <el-row justify="space-between" style="width: 100%">
@@ -64,7 +64,7 @@
           </el-row>
         </el-form-item>
       </el-col>
-      <el-col :span="24" style="padding-left: 10px; padding-right: 10px">
+      <el-col :span="24" style="padding-right: 10px; padding-left: 10px">
         <el-form-item>
           <XButton
             :loading="loginLoading"
@@ -82,7 +82,7 @@
         mode="pop"
         @success="handleLogin"
       />
-      <el-col :span="24" style="padding-left: 10px; padding-right: 10px">
+      <el-col :span="24" style="padding-right: 10px; padding-left: 10px">
         <el-form-item>
           <el-row :gutter="5" justify="space-between" style="width: 100%">
             <el-col :span="8">
@@ -110,15 +110,15 @@
         </el-form-item>
       </el-col>
       <el-divider content-position="center">{{ t('login.otherLogin') }}</el-divider>
-      <el-col :span="24" style="padding-left: 10px; padding-right: 10px">
+      <el-col :span="24" style="padding-right: 10px; padding-left: 10px">
         <el-form-item>
-          <div class="flex justify-between w-[100%]">
+          <div class="w-[100%] flex justify-between">
             <Icon
               v-for="(item, key) in socialList"
               :key="key"
               :icon="item.icon"
               :size="30"
-              class="cursor-pointer anticon"
+              class="anticon cursor-pointer"
               color="#999"
               @click="doSocialLogin(item.type)"
             />
@@ -126,9 +126,9 @@
         </el-form-item>
       </el-col>
       <el-divider content-position="center">萌新必读</el-divider>
-      <el-col :span="24" style="padding-left: 10px; padding-right: 10px">
+      <el-col :span="24" style="padding-right: 10px; padding-left: 10px">
         <el-form-item>
-          <div class="flex justify-between w-[100%]">
+          <div class="w-[100%] flex justify-between">
             <el-link href="https://doc.iocoder.cn/" target="_blank">📚开发指南</el-link>
             <el-link href="https://doc.iocoder.cn/video/" target="_blank">🔥视频教程</el-link>
             <el-link href="https://www.iocoder.cn/Interview/good-collection/" target="_blank">
@@ -143,7 +143,7 @@
     </el-row>
   </el-form>
 </template>
-<script lang="ts" name="LoginForm" setup>
+<script lang="ts" setup>
 import { ElLoading } from 'element-plus'
 import LoginFormTitle from './LoginFormTitle.vue'
 import type { RouteLocationNormalizedLoaded } from 'vue-router'
@@ -154,6 +154,8 @@ import * as authUtil from '@/utils/auth'
 import { usePermissionStore } from '@/store/modules/permission'
 import * as LoginApi from '@/api/login'
 import { LoginStateEnum, useFormValid, useLoginState } from './useLogin'
+
+defineOptions({ name: 'LoginForm' })
 
 const { t } = useI18n()
 const message = useMessage()
@@ -191,10 +193,10 @@ const loginData = reactive({
 })
 
 const socialList = [
-  { icon: 'ant-design:github-filled', type: 0 },
   { icon: 'ant-design:wechat-filled', type: 30 },
-  { icon: 'ant-design:alipay-circle-filled', type: 0 },
-  { icon: 'ant-design:dingtalk-circle-filled', type: 20 }
+  { icon: 'ant-design:dingtalk-circle-filled', type: 20 },
+  { icon: 'ant-design:github-filled', type: 0 },
+  { icon: 'ant-design:alipay-circle-filled', type: 0 }
 ]
 
 // 获取验证码
@@ -208,7 +210,7 @@ const getCode = async () => {
     verify.value.show()
   }
 }
-//获取租户ID
+// 获取租户 ID
 const getTenantId = async () => {
   if (loginData.tenantEnable === 'true') {
     const res = await LoginApi.getTenantIdByName(loginData.loginForm.tenantName)
@@ -228,6 +230,16 @@ const getCookie = () => {
     }
   }
 }
+// 根据域名，获得租户信息
+const getTenantByWebsite = async () => {
+  const website = location.host
+  const res = await LoginApi.getTenantByWebsite(website)
+  if (res) {
+    loginData.loginForm.tenantName = res.name
+    authUtil.setTenantId(res.id)
+  }
+}
+const loading = ref() // ElLoading.service 返回的实例
 // 登录
 const handleLogin = async (params) => {
   loginLoading.value = true
@@ -242,7 +254,7 @@ const handleLogin = async (params) => {
     if (!res) {
       return
     }
-    ElLoading.service({
+    loading.value = ElLoading.service({
       lock: true,
       text: '正在加载系统中...',
       background: 'rgba(0, 0, 0, 0.7)'
@@ -262,13 +274,9 @@ const handleLogin = async (params) => {
     } else {
       push({ path: redirect.value || permissionStore.addRouters[0].path })
     }
-  } catch {
-    loginLoading.value = false
   } finally {
-    setTimeout(() => {
-      const loadingInstance = ElLoading.service()
-      loadingInstance.close()
-    }, 400)
+    loginLoading.value = false
+    loading.value.close()
   }
 }
 
@@ -279,14 +287,24 @@ const doSocialLogin = async (type: number) => {
   } else {
     loginLoading.value = true
     if (loginData.tenantEnable === 'true') {
-      await message.prompt('请输入租户名称', t('common.reminder')).then(async ({ value }) => {
-        const res = await LoginApi.getTenantIdByName(value)
-        authUtil.setTenantId(res)
-      })
+      // 尝试先通过 tenantName 获取租户
+      await getTenantId()
+      // 如果获取不到，则需要弹出提示，进行处理
+      if (!authUtil.getTenantId()) {
+        await message.prompt('请输入租户名称', t('common.reminder')).then(async ({ value }) => {
+          const res = await LoginApi.getTenantIdByName(value)
+          authUtil.setTenantId(res)
+        })
+      }
     }
     // 计算 redirectUri
+    // tricky: type、redirect需要先encode一次，否则钉钉回调会丢失。
+    // 配合 Login/SocialLogin.vue#getUrlValue() 使用
     const redirectUri =
-      location.origin + '/social-login?type=' + type + '&redirect=' + (redirect.value || '/')
+      location.origin +
+      '/social-login?' +
+      encodeURIComponent(`type=${type}&redirect=${redirect.value || '/'}`)
+
     // 进行跳转
     const res = await LoginApi.socialAuthRedirect(type, encodeURIComponent(redirectUri))
     window.location.href = res
@@ -303,6 +321,7 @@ watch(
 )
 onMounted(() => {
   getCookie()
+  getTenantByWebsite()
 })
 </script>
 
@@ -314,16 +333,16 @@ onMounted(() => {
 }
 
 .login-code {
+  float: right;
   width: 100%;
   height: 38px;
-  float: right;
 
   img {
-    cursor: pointer;
     width: 100%;
-    max-width: 100px;
     height: auto;
+    max-width: 100px;
     vertical-align: middle;
+    cursor: pointer;
   }
 }
 </style>

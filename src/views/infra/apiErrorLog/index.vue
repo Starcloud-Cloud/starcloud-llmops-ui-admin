@@ -46,7 +46,7 @@
       <el-form-item label="异常时间" prop="exceptionTime">
         <el-date-picker
           v-model="queryParams.exceptionTime"
-          value-format="yyyy-MM-dd HH:mm:ss"
+          value-format="YYYY-MM-DD HH:mm:ss"
           type="daterange"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
@@ -158,13 +158,16 @@
   <ApiErrorLogDetail ref="detailRef" />
 </template>
 
-<script setup lang="ts" name="InfraApiErrorLog">
+<script lang="ts" setup>
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
 import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import * as ApiErrorLogApi from '@/api/infra/apiErrorLog'
 import ApiErrorLogDetail from './ApiErrorLogDetail.vue'
 import { InfraApiErrorLogProcessStatusEnum } from '@/utils/constants'
+
+defineOptions({ name: 'InfraApiErrorLog' })
+
 const message = useMessage() // 消息弹窗
 
 const loading = ref(true) // 列表的加载中

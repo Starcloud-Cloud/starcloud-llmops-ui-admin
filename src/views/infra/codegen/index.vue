@@ -1,5 +1,7 @@
 <template>
-  <doc-alert title="代码生成" url="https://doc.iocoder.cn/new-feature/" />
+  <doc-alert title="代码生成（单表）" url="https://doc.iocoder.cn/new-feature/" />
+  <doc-alert title="代码生成（树表）" url="https://doc.iocoder.cn/new-feature/tree/" />
+  <doc-alert title="代码生成（主子表）" url="https://doc.iocoder.cn/new-feature/master-sub/" />
   <doc-alert title="单元测试" url="https://doc.iocoder.cn/unit-test/" />
 
   <!-- 搜索 -->
@@ -37,7 +39,7 @@
           end-placeholder="结束日期"
           start-placeholder="开始日期"
           type="daterange"
-          value-format="YYYY-MM-dd HH:mm:ss"
+          value-format="YYYY-MM-DD HH:mm:ss"
         />
       </el-form-item>
       <el-form-item>
@@ -149,13 +151,15 @@
   <!-- 弹窗：预览代码 -->
   <PreviewCode ref="previewRef" />
 </template>
-<script lang="ts" name="InfraCodegen" setup>
+<script lang="ts" setup>
 import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import * as CodegenApi from '@/api/infra/codegen'
 import * as DataSourceConfigApi from '@/api/infra/dataSourceConfig'
 import ImportTable from './ImportTable.vue'
 import PreviewCode from './PreviewCode.vue'
+
+defineOptions({ name: 'InfraCodegen' })
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化

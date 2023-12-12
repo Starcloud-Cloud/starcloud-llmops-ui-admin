@@ -32,21 +32,19 @@
     </el-upload>
   </div>
 </template>
-<script setup lang="ts" name="UploadFile">
-import { PropType } from 'vue'
-
+<script lang="ts" setup>
 import { propTypes } from '@/utils/propTypes'
 import { getAccessToken, getTenantId } from '@/utils/auth'
 import type { UploadInstance, UploadUserFile, UploadProps, UploadRawFile } from 'element-plus'
+import { isArray, isString } from '@/utils/is'
+
+defineOptions({ name: 'UploadFile' })
 
 const message = useMessage() // 消息弹窗
 const emit = defineEmits(['update:modelValue'])
 
 const props = defineProps({
-  modelValue: {
-    type: Array as PropType<UploadUserFile[]>,
-    required: true
-  },
+  modelValue: propTypes.oneOfType<string | string[]>([String, Array<String>]).isRequired,
   title: propTypes.string.def('文件上传'),
   updateUrl: propTypes.string.def(import.meta.env.VITE_UPLOAD_URL),
   fileType: propTypes.array.def(['doc', 'xls', 'ppt', 'txt', 'pdf']), // 文件类型, 例如['png', 'jpg', 'jpeg']
@@ -60,7 +58,7 @@ const props = defineProps({
 const valueRef = ref(props.modelValue)
 const uploadRef = ref<UploadInstance>()
 const uploadList = ref<UploadUserFile[]>([])
-const fileList = ref<UploadUserFile[]>(props.modelValue)
+const fileList = ref<UploadUserFile[]>([])
 const uploadNumber = ref<number>(0)
 const uploadHeaders = ref({
   Authorization: 'Bearer ' + getAccessToken(),
@@ -107,7 +105,7 @@ const handleFileSuccess: UploadProps['onSuccess'] = (res: any): void => {
     fileList.value = fileList.value.concat(uploadList.value)
     uploadList.value = []
     uploadNumber.value = 0
-    emit('update:modelValue', listToString(fileList.value))
+    emitUpdateModelValue()
   }
 }
 // 文件数超出提示
@@ -123,41 +121,74 @@ const handleRemove = (file) => {
   const findex = fileList.value.map((f) => f.name).indexOf(file.name)
   if (findex > -1) {
     fileList.value.splice(findex, 1)
-    emit('update:modelValue', listToString(fileList.value))
+    emitUpdateModelValue()
   }
 }
 const handlePreview: UploadProps['onPreview'] = (uploadFile) => {
   console.log(uploadFile)
 }
-// 对象转成指定字符串分隔
-const listToString = (list: UploadUserFile[], separator?: string) => {
-  let strs = ''
-  separator = separator || ','
-  for (let i in list) {
-    strs += list[i].url + separator
+
+// 监听模型绑定值变动
+watch(
+  () => props.modelValue,
+  () => {
+    const files: string[] = []
+    // 情况1：字符串
+    if (isString(props.modelValue)) {
+      // 情况1.1：逗号分隔的多值
+      if (props.modelValue.includes(',')) {
+        files.concat(props.modelValue.split(','))
+      } else if (props.modelValue.length > 0) {
+        files.push(props.modelValue)
+      }
+    } else if (isArray(props.modelValue)) {
+      // 情况2：字符串
+      files.concat(props.modelValue)
+    } else if (props.modelValue == null) {
+      // 情况3：undefined 不处理
+    } else {
+      throw new Error('不支持的 modelValue 类型')
+    }
+    fileList.value = files.map((url: string) => {
+      return { url, name: url.substring(url.lastIndexOf('/') + 1) } as UploadUserFile
+    })
+  },
+  { immediate: true }
+)
+// 发送文件链接列表更新
+const emitUpdateModelValue = () => {
+  // 情况1：数组结果
+  let result: string | string[] = fileList.value.map((file) => file.url!)
+  // 情况2：逗号分隔的字符串
+  if (isString(props.modelValue)) {
+    result = result.join(',')
   }
-  return strs != '' ? strs.substr(0, strs.length - 1) : ''
+  emit('update:modelValue', result)
 }
 </script>
 <style scoped lang="scss">
 .upload-file-uploader {
   margin-bottom: 5px;
 }
+
 :deep(.upload-file-list .el-upload-list__item) {
-  border: 1px solid #e4e7ed;
-  line-height: 2;
-  margin-bottom: 10px;
   position: relative;
+  margin-bottom: 10px;
+  line-height: 2;
+  border: 1px solid #e4e7ed;
 }
+
 :deep(.el-upload-list__item-file-name) {
   max-width: 250px;
 }
+
 :deep(.upload-file-list .ele-upload-list__item-content) {
   display: flex;
   justify-content: space-between;
   align-items: center;
   color: inherit;
 }
+
 :deep(.ele-upload-list__item-content-action .el-link) {
   margin-right: 10px;
 }

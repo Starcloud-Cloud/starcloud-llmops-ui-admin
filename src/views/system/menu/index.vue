@@ -1,6 +1,6 @@
 <template>
   <doc-alert title="功能权限" url="https://doc.iocoder.cn/resource-permission" />
-  <doc-alert title="菜单路由" url="https://doc.iocoder.cn/vue2/route/" />
+  <doc-alert title="菜单路由" url="https://doc.iocoder.cn/vue3/route/" />
 
   <!-- 搜索工作栏 -->
   <ContentWrap>
@@ -123,12 +123,15 @@
   <!-- 表单弹窗：添加/修改 -->
   <MenuForm ref="formRef" @success="getList" />
 </template>
-<script lang="ts" name="SystemMenu" setup>
+<script lang="ts" setup>
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
 import { handleTree } from '@/utils/tree'
 import * as MenuApi from '@/api/system/menu'
 import MenuForm from './MenuForm.vue'
 import { CACHE_KEY, useCache } from '@/hooks/web/useCache'
+
+defineOptions({ name: 'SystemMenu' })
+
 const { wsCache } = useCache()
 const { t } = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
@@ -185,6 +188,7 @@ const refreshMenu = async () => {
   try {
     await message.confirm('即将更新缓存刷新浏览器！', '刷新菜单缓存')
     // 清空，从而触发刷新
+    wsCache.delete(CACHE_KEY.USER)
     wsCache.delete(CACHE_KEY.ROLE_ROUTERS)
     // 刷新浏览器
     location.reload()

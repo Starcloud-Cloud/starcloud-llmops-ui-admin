@@ -1,7 +1,7 @@
 import { reactive } from 'vue'
 import { AxiosPromise } from 'axios'
 import { findIndex } from '@/utils'
-import { eachTree, treeMap, filter } from '@/utils/tree'
+import { eachTree, filter, treeMap } from '@/utils/tree'
 import { getBoolDictOptions, getDictOptions, getIntDictOptions } from '@/utils/dict'
 
 import { FormSchema } from '@/types/form'
@@ -9,6 +9,7 @@ import { TableColumn } from '@/types/table'
 import { DescriptionsSchema } from '@/types/descriptions'
 import { ComponentOptions, ComponentProps } from '@/types/components'
 import { DictTag } from '@/components/DictTag'
+import { cloneDeep, merge } from 'lodash-es'
 
 export type CrudSchema = Omit<TableColumn, 'children'> & {
   isSearch?: boolean // 是否在查询显示
@@ -36,8 +37,11 @@ type CrudSearchParams = {
 type CrudTableParams = {
   // 是否显示表头
   show?: boolean
+  // 列宽配置
+  width?: number | string
+  // 列是否固定在左侧或者右侧
+  fixed?: 'left' | 'right'
 } & Omit<FormSchema, 'field'>
-
 type CrudFormParams = {
   // 是否显示表单项
   show?: boolean
@@ -113,14 +117,18 @@ const filterSearchSchema = (crudSchema: CrudSchema[], allSchemas: AllSchemas): F
         }
         if (!schemaItem.search?.component) component = 'Select'
       }
-      const searchSchemaItem = {
-        // 默认为 input
-        component: component,
-        componentProps: comonentProps,
-        ...schemaItem.search,
-        field: schemaItem.field,
-        label: schemaItem.search?.label || schemaItem.label
-      }
+
+      // updated by AKing: 解决了当使用默认的dict选项时，form中事件不能触发的问题
+      const searchSchemaItem = merge(
+        {
+          // 默认为 input
+          component,
+          ...schemaItem.search,
+          field: schemaItem.field,
+          label: schemaItem.search?.label || schemaItem.label
+        },
+        { componentProps: comonentProps }
+      )
       if (searchSchemaItem.api) {
         searchRequestTask.push(async () => {
           const res = await (searchSchemaItem.api as () => AxiosPromise)()
@@ -220,15 +228,19 @@ const filterFormSchema = (crudSchema: CrudSchema[], allSchemas: AllSchemas): For
         }
         if (!(schemaItem.form && schemaItem.form.component)) component = 'Select'
       }
-      const formSchemaItem = {
-        // 默认为 input
-        component: component,
-        componentProps: comonentProps,
-        value: defaultValue,
-        ...schemaItem.form,
-        field: schemaItem.field,
-        label: schemaItem.form?.label || schemaItem.label
-      }
+
+      // updated by AKing: 解决了当使用默认的dict选项时，form中事件不能触发的问题
+      const formSchemaItem = merge(
+        {
+          // 默认为 input
+          component,
+          value: defaultValue,
+          ...schemaItem.form,
+          field: schemaItem.field,
+          label: schemaItem.form?.label || schemaItem.label
+        },
+        { componentProps: comonentProps }
+      )
 
       if (formSchemaItem.api) {
         formRequestTask.push(async () => {
@@ -302,4 +314,13 @@ const filterOptions = (options: Recordable, labelField?: string) => {
     }
     return v
   })
+}
+
+// 将 tableColumns 指定 fields 放到最前面
+export const sortTableColumns = (tableColumns: TableColumn[], field: string) => {
+  const fieldIndex = tableColumns.findIndex((item) => item.field === field)
+  const fieldColumn = cloneDeep(tableColumns[fieldIndex])
+  tableColumns.splice(fieldIndex, 1)
+  // 添加到开头
+  tableColumns.unshift(fieldColumn)
 }

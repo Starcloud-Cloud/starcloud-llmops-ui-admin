@@ -31,7 +31,7 @@
       <el-card
         v-loading="loading"
         :gutter="12"
-        class="w-2/3 ml-3"
+        class="ml-3 w-2/3"
         element-loading-text="加载代码中..."
         shadow="hover"
       >
@@ -45,16 +45,16 @@
             <el-button class="float-right" text type="primary" @click="copy(item.code)">
               {{ t('common.copy') }}
             </el-button>
-            <div>
-              <pre><code class="hljs" v-html="highlightedCode(item)"></code></pre>
-            </div>
+            <el-scrollbar height="600px">
+              <pre><code v-dompurify-html="highlightedCode(item)" class="hljs"></code></pre>
+            </el-scrollbar>
           </el-tab-pane>
         </el-tabs>
       </el-card>
     </div>
   </Dialog>
 </template>
-<script lang="ts" name="InfraCodegenPreviewCode" setup>
+<script lang="ts" setup>
 import { useClipboard } from '@vueuse/core'
 import { handleTree2 } from '@/utils/tree'
 import * as CodegenApi from '@/api/infra/codegen'
@@ -66,6 +66,8 @@ import xml from 'highlight.js/lib/languages/java'
 import javascript from 'highlight.js/lib/languages/javascript'
 import sql from 'highlight.js/lib/languages/sql'
 import typescript from 'highlight.js/lib/languages/typescript'
+
+defineOptions({ name: 'InfraCodegenPreviewCode' })
 
 const { t } = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
@@ -213,8 +215,8 @@ onMounted(async () => {
 <style lang="scss">
 .app-infra-codegen-preview-container {
   .el-scrollbar .el-scrollbar__wrap .el-scrollbar__view {
-    white-space: nowrap;
     display: inline-block;
+    white-space: nowrap;
   }
 }
 </style>

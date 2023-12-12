@@ -30,7 +30,7 @@
       <el-form-item label="创建时间" prop="createTime">
         <el-date-picker
           v-model="queryParams.createTime"
-          value-format="yyyy-MM-dd HH:mm:ss"
+          value-format="YYYY-MM-DD HH:mm:ss"
           type="daterange"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
@@ -111,13 +111,16 @@
   <UserGroupForm ref="formRef" @success="getList" />
 </template>
 
-<script setup lang="ts" name="BpmUserGroup">
+<script lang="ts" setup>
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
 import { dateFormatter } from '@/utils/formatTime'
 import * as UserGroupApi from '@/api/bpm/userGroup'
 import * as UserApi from '@/api/system/user'
 import UserGroupForm from './UserGroupForm.vue'
 import { UserVO } from '@/api/system/user'
+
+defineOptions({ name: 'BpmUserGroup' })
+
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 

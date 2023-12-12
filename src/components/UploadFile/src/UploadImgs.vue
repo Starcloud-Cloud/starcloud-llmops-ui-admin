@@ -1,19 +1,19 @@
 <template>
   <div class="upload-box">
     <el-upload
-      :action="updateUrl"
-      list-type="picture-card"
-      :class="['upload', drag ? 'no-border' : '']"
       v-model:file-list="fileList"
-      :multiple="true"
-      :limit="limit"
-      :headers="uploadHeaders"
+      :accept="fileType.join(',')"
+      :action="updateUrl"
       :before-upload="beforeUpload"
+      :class="['upload', drag ? 'no-border' : '']"
+      :drag="drag"
+      :headers="uploadHeaders"
+      :limit="limit"
+      :multiple="true"
+      :on-error="uploadError"
       :on-exceed="handleExceed"
       :on-success="uploadSuccess"
-      :on-error="uploadError"
-      :drag="drag"
-      :accept="fileType.join(',')"
+      list-type="picture-card"
     >
       <div class="upload-empty">
         <slot name="empty">
@@ -40,18 +40,20 @@
     </div>
     <el-image-viewer
       v-if="imgViewVisible"
-      @close="imgViewVisible = false"
       :url-list="[viewImageUrl]"
+      @close="imgViewVisible = false"
     />
   </div>
 </template>
-<script setup lang="ts" name="UploadImgs">
+<script lang="ts" setup>
 import { PropType } from 'vue'
+import type { UploadFile, UploadProps, UploadUserFile } from 'element-plus'
 import { ElNotification } from 'element-plus'
-import type { UploadProps, UploadFile, UploadUserFile } from 'element-plus'
 
 import { propTypes } from '@/utils/propTypes'
 import { getAccessToken, getTenantId } from '@/utils/auth'
+
+defineOptions({ name: 'UploadImgs' })
 
 const message = useMessage() // 消息弹窗
 
@@ -80,7 +82,7 @@ const props = defineProps({
   fileType: propTypes.array.def(['image/jpeg', 'image/png', 'image/gif']), // 图片类型限制 ==> 非必传（默认为 ["image/jpeg", "image/png", "image/gif"]）
   height: propTypes.string.def('150px'), // 组件高度 ==> 非必传（默认为 150px）
   width: propTypes.string.def('150px'), // 组件宽度 ==> 非必传（默认为 150px）
-  borderRadius: propTypes.string.def('8px') // 组件边框圆角 ==> 非必传（默认为 8px）
+  borderradius: propTypes.string.def('8px') // 组件边框圆角 ==> 非必传（默认为 8px）
 })
 
 const uploadHeaders = ref({
@@ -88,8 +90,19 @@ const uploadHeaders = ref({
   'tenant-id': getTenantId()
 })
 
-const fileList = ref<UploadUserFile[]>(props.modelValue)
-
+const fileList = ref<UploadUserFile[]>([])
+// fix: 改为动态监听赋值解决图片回显问题
+watch(
+  () => props.modelValue,
+  (data) => {
+    if (!data) return
+    fileList.value = data
+  },
+  {
+    deep: true,
+    immediate: true
+  }
+)
 /**
  * @description 文件上传之前判断
  * @param rawFile 上传的文件
@@ -116,9 +129,11 @@ const beforeUpload: UploadProps['beforeUpload'] = (rawFile) => {
 interface UploadEmits {
   (e: 'update:modelValue', value: UploadUserFile[]): void
 }
+
 const emit = defineEmits<UploadEmits>()
 const uploadSuccess = (response, uploadFile: UploadFile) => {
   if (!response) return
+  // TODO 多图上传组件成功后只是把保存成功后的url替换掉组件选图时的文件路径，所以返回的fileList包含的是一个包含文件信息的对象列表
   uploadFile.url = response.data
   emit('update:modelValue', fileList.value)
   message.success('上传成功')
@@ -159,35 +174,40 @@ const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile) => {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .is-error {
   .upload {
     :deep(.el-upload--picture-card),
     :deep(.el-upload-dragger) {
       border: 1px dashed var(--el-color-danger) !important;
+
       &:hover {
         border-color: var(--el-color-primary) !important;
       }
     }
   }
 }
+
 :deep(.disabled) {
   .el-upload--picture-card,
   .el-upload-dragger {
     cursor: not-allowed;
     background: var(--el-disabled-bg-color) !important;
     border: 1px dashed var(--el-border-color-darker);
+
     &:hover {
       border-color: var(--el-border-color-darker) !important;
     }
   }
 }
+
 .upload-box {
   .no-border {
     :deep(.el-upload--picture-card) {
       border: none !important;
     }
   }
+
   :deep(.upload) {
     .el-upload-dragger {
       display: flex;
@@ -198,41 +218,47 @@ const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile) => {
       padding: 0;
       overflow: hidden;
       border: 1px dashed var(--el-border-color-darker);
-      border-radius: v-bind(borderRadius);
+      border-radius: v-bind(borderradius);
+
       &:hover {
         border: 1px dashed var(--el-color-primary);
       }
     }
+
     .el-upload-dragger.is-dragover {
       background-color: var(--el-color-primary-light-9);
       border: 2px dashed var(--el-color-primary) !important;
     }
+
     .el-upload-list__item,
     .el-upload--picture-card {
       width: v-bind(width);
       height: v-bind(height);
       background-color: transparent;
-      border-radius: v-bind(borderRadius);
+      border-radius: v-bind(borderradius);
     }
+
     .upload-image {
       width: 100%;
       height: 100%;
       object-fit: contain;
     }
+
     .upload-handle {
       position: absolute;
       top: 0;
       right: 0;
-      box-sizing: border-box;
       display: flex;
-      align-items: center;
-      justify-content: center;
       width: 100%;
       height: 100%;
       cursor: pointer;
       background: rgb(0 0 0 / 60%);
       opacity: 0;
+      box-sizing: border-box;
       transition: var(--el-transition-duration-fast);
+      align-items: center;
+      justify-content: center;
+
       .handle-icon {
         display: flex;
         flex-direction: column;
@@ -240,15 +266,18 @@ const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile) => {
         justify-content: center;
         padding: 0 6%;
         color: aliceblue;
+
         .el-icon {
           margin-bottom: 15%;
           font-size: 140%;
         }
+
         span {
           font-size: 100%;
         }
       }
     }
+
     .el-upload-list__item {
       &:hover {
         .upload-handle {
@@ -256,6 +285,7 @@ const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile) => {
         }
       }
     }
+
     .upload-empty {
       display: flex;
       flex-direction: column;
@@ -263,12 +293,14 @@ const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile) => {
       font-size: 12px;
       line-height: 30px;
       color: var(--el-color-info);
+
       .el-icon {
         font-size: 28px;
         color: var(--el-text-color-secondary);
       }
     }
   }
+
   .el-upload__tip {
     line-height: 15px;
     text-align: center;

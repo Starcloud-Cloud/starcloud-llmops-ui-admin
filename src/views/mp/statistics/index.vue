@@ -73,10 +73,13 @@
   </ContentWrap>
 </template>
 
-<script setup lang="ts" name="MpStatistics">
+<script lang="ts" setup>
 import { formatDate, addTime, betweenDay, beginOfDay, endOfDay } from '@/utils/formatTime'
 import * as StatisticsApi from '@/api/mp/statistics'
 import * as MpAccountApi from '@/api/mp/account'
+
+defineOptions({ name: 'MpStatistics' })
+
 const message = useMessage() // 消息弹窗
 
 // 默认开始时间是当前日期-7，结束时间是当前日期-1
@@ -84,7 +87,7 @@ const dateRange = ref([
   beginOfDay(new Date(new Date().getTime() - 3600 * 1000 * 24 * 7)),
   endOfDay(new Date(new Date().getTime() - 3600 * 1000 * 24))
 ])
-const accountId = ref() // 选中的公众号编号
+const accountId = ref(-1) // 选中的公众号编号
 const accountList = ref<MpAccountApi.AccountVO[]>([]) // 公众号账号列表
 
 const xAxisDate = ref([] as any[]) // X 轴的日期范围
@@ -232,7 +235,7 @@ const getAccountList = async () => {
   accountList.value = await MpAccountApi.getSimpleAccountList()
   // 默认选中第一个
   if (accountList.value.length > 0) {
-    accountId.value = accountList.value[0].id
+    accountId.value = accountList.value[0].id!
   }
 }
 

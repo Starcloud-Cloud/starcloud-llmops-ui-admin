@@ -1,6 +1,8 @@
-<script lang="ts" name="ContentDetailWrap" setup>
+<script lang="ts" setup>
 import { propTypes } from '@/utils/propTypes'
 import { useDesign } from '@/hooks/web/useDesign'
+
+defineOptions({ name: 'ContentDetailWrap' })
 
 const { t } = useI18n()
 
@@ -26,7 +28,7 @@ onMounted(() => {
       <div
         :class="[
           `${prefixCls}-header`,
-          'flex border-bottom-1 h-50px items-center text-center pr-10px'
+          'flex b-b-1 h-50px items-center text-center bg-white pr-10px'
         ]"
       >
         <div :class="[`${prefixCls}-header__back`, 'flex pl-10px pr-10px ']">

@@ -34,7 +34,7 @@
         <el-date-picker
           v-model="queryParams.createTime"
           style="width: 240px"
-          value-format="yyyy-MM-dd HH:mm:ss"
+          value-format="YYYY-MM-DD HH:mm:ss"
           type="daterange"
           range-separator="-"
           start-placeholder="开始日期"
@@ -79,7 +79,7 @@
     <WxMsg :user-id="messageBox.userId" />
   </el-dialog>
 </template>
-<script setup lang="ts" name="MpMessage">
+<script lang="ts" setup>
 import * as MpMessageApi from '@/api/mp/message'
 import WxMsg from '@/views/mp/components/wx-msg'
 import WxAccountSelect from '@/views/mp/components/wx-account-select'
@@ -88,25 +88,19 @@ import { DICT_TYPE, getStrDictOptions } from '@/utils/dict'
 import { MsgType } from '@/views/mp/components/wx-msg/types'
 import type { FormInstance } from 'element-plus'
 
+defineOptions({ name: 'MpMessage' })
+
 const loading = ref(false)
 const total = ref(0) // 数据的总页数
 const list = ref<any[]>([]) // 当前页的列表数据
 
 // 搜索参数
-interface QueryParams {
-  pageNo: number
-  pageSize: number
-  openid: string | undefined
-  accountId: number
-  type: MsgType | undefined
-  createTime: string[] | []
-}
-const queryParams: QueryParams = reactive({
+const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
-  openid: undefined,
-  accountId: 0,
-  type: undefined,
+  openid: '',
+  accountId: -1,
+  type: MsgType.Text,
   createTime: []
 })
 const queryFormRef = ref<FormInstance | null>(null) // 搜索的表单
@@ -120,6 +114,7 @@ const messageBox = reactive({
 /** 侦听accountId */
 const onAccountChanged = (id: number) => {
   queryParams.accountId = id
+  queryParams.pageNo = 1
   handleQuery()
 }
 

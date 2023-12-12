@@ -6,7 +6,8 @@ import {
   PieChart,
   MapChart,
   PictorialBarChart,
-  RadarChart
+  RadarChart,
+  GaugeChart
 } from 'echarts/charts'
 
 import {
@@ -16,7 +17,9 @@ import {
   PolarComponent,
   AriaComponent,
   ParallelComponent,
-  LegendComponent
+  LegendComponent,
+  ToolboxComponent,
+  VisualMapComponent
 } from 'echarts/components'
 
 import { CanvasRenderer } from 'echarts/renderers'
@@ -25,17 +28,20 @@ echarts.use([
   LegendComponent,
   TitleComponent,
   TooltipComponent,
+  ToolboxComponent,
   GridComponent,
   PolarComponent,
   AriaComponent,
   ParallelComponent,
+  VisualMapComponent,
   BarChart,
   LineChart,
   PieChart,
   MapChart,
   CanvasRenderer,
   PictorialBarChart,
-  RadarChart
+  RadarChart,
+  GaugeChart
 ])
 
 export default echarts

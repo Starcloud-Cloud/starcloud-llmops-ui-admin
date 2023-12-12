@@ -54,8 +54,8 @@
           value-format="x"
         />
       </el-form-item>
-      <el-form-item label="绑定域名" prop="domain">
-        <el-input v-model="formData.domain" placeholder="请输入绑定域名" />
+      <el-form-item label="绑定域名" prop="website">
+        <el-input v-model="formData.website" placeholder="请输入绑定域名" />
       </el-form-item>
       <el-form-item label="租户状态" prop="status">
         <el-radio-group v-model="formData.status">
@@ -75,11 +75,13 @@
     </template>
   </Dialog>
 </template>
-<script lang="ts" name="SystemTenantForm" setup>
+<script lang="ts" setup>
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
 import * as TenantApi from '@/api/system/tenant'
 import { CommonStatusEnum } from '@/utils/constants'
 import * as TenantPackageApi from '@/api/system/tenantPackage'
+
+defineOptions({ name: 'SystemTenantForm' })
 
 const { t } = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
@@ -95,7 +97,7 @@ const formData = ref({
   contactMobile: undefined,
   accountCount: undefined,
   expireTime: undefined,
-  domain: undefined,
+  website: undefined,
   status: CommonStatusEnum.ENABLE
 })
 const formRules = reactive({
@@ -105,7 +107,7 @@ const formRules = reactive({
   status: [{ required: true, message: '租户状态不能为空', trigger: 'blur' }],
   accountCount: [{ required: true, message: '账号额度不能为空', trigger: 'blur' }],
   expireTime: [{ required: true, message: '过期时间不能为空', trigger: 'blur' }],
-  domain: [{ required: true, message: '绑定域名不能为空', trigger: 'blur' }],
+  website: [{ required: true, message: '绑定域名不能为空', trigger: 'blur' }],
   username: [{ required: true, message: '用户名称不能为空', trigger: 'blur' }],
   password: [{ required: true, message: '用户密码不能为空', trigger: 'blur' }]
 })
@@ -168,7 +170,7 @@ const resetForm = () => {
     contactMobile: undefined,
     accountCount: undefined,
     expireTime: undefined,
-    domain: undefined,
+    website: undefined,
     status: CommonStatusEnum.ENABLE
   }
   formRef.value?.resetFields()

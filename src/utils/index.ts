@@ -34,6 +34,13 @@ export const underlineToHump = (str: string): string => {
   })
 }
 
+/**
+ * 驼峰转横杠
+ */
+export const humpToDash = (str: string): string => {
+  return str.replace(/([A-Z])/g, '-$1').toLowerCase()
+}
+
 export const setCssVar = (prop: string, val: any, dom = document.documentElement) => {
   dom.style.setProperty(prop, val)
 }
@@ -67,7 +74,7 @@ export const trim = (str: string) => {
  * @param {Date | number | string} time 需要转换的时间
  * @param {String} fmt 需要转换的格式 如 yyyy-MM-dd、yyyy-MM-dd HH:mm:ss
  */
-export const formatTime = (time: Date | number | string, fmt: string) => {
+export function formatTime(time: Date | number | string, fmt: string) {
   if (!time) return ''
   else {
     const date = new Date(time)
@@ -98,13 +105,20 @@ export const formatTime = (time: Date | number | string, fmt: string) => {
 /**
  * 生成随机字符串
  */
-export const toAnyString = () => {
+export function toAnyString() {
   const str: string = 'xxxxx-xxxxx-4xxxx-yxxxx-xxxxx'.replace(/[xy]/g, (c: string) => {
     const r: number = (Math.random() * 16) | 0
     const v: number = c === 'x' ? r : (r & 0x3) | 0x8
     return v.toString()
   })
   return str
+}
+
+/**
+ * 首字母大写
+ */
+export function firstUpperCase(str: string) {
+  return str.toLowerCase().replace(/( |^)[a-z]/g, (L) => L.toUpperCase())
 }
 
 export const generateUUID = () => {
@@ -154,4 +168,98 @@ export const fileSizeFormatter = (row, column, cellValue) => {
   const size = srcSize / Math.pow(1024, index)
   const sizeStr = size.toFixed(2) //保留的小数位数
   return sizeStr + ' ' + unitArr[index]
+}
+
+/**
+ * 将值复制到目标对象，且以目标对象属性为准，例：target: {a:1} source:{a:2,b:3} 结果为：{a:2}
+ * @param target 目标对象
+ * @param source 源对象
+ */
+export const copyValueToTarget = (target, source) => {
+  const newObj = Object.assign({}, target, source)
+  // 删除多余属性
+  Object.keys(newObj).forEach((key) => {
+    // 如果不是target中的属性则删除
+    if (Object.keys(target).indexOf(key) === -1) {
+      delete newObj[key]
+    }
+  })
+  // 更新目标对象值
+  Object.assign(target, newObj)
+}
+
+/**
+ * 将一个整数转换为分数保留两位小数
+ * @param num
+ */
+export const formatToFraction = (num: number | string | undefined): number => {
+  if (typeof num === 'undefined') return 0
+  const parsedNumber = typeof num === 'string' ? parseFloat(num) : num
+  return parseFloat((parsedNumber / 100).toFixed(2))
+}
+
+/**
+ * 将一个数转换为 1.00 这样
+ * 数据呈现的时候使用
+ *
+ * @param num 整数
+ */
+export const floatToFixed2 = (num: number | string | undefined): string => {
+  let str = '0.00'
+  if (typeof num === 'undefined') {
+    return str
+  }
+  const f = formatToFraction(num)
+  const decimalPart = f.toString().split('.')[1]
+  const len = decimalPart ? decimalPart.length : 0
+  switch (len) {
+    case 0:
+      str = f.toString() + '.00'
+      break
+    case 1:
+      str = f.toString() + '0'
+      break
+    case 2:
+      str = f.toString()
+      break
+  }
+  return str
+}
+
+/**
+ * 将一个分数转换为整数
+ * @param num
+ */
+export const convertToInteger = (num: number | string | undefined): number => {
+  if (typeof num === 'undefined') return 0
+  const parsedNumber = typeof num === 'string' ? parseFloat(num) : num
+  // TODO 分转元后还有小数则四舍五入
+  return Math.round(parsedNumber * 100)
+}
+
+/**
+ * 元转分
+ */
+export const yuanToFen = (amount: string | number): number => {
+  return convertToInteger(amount)
+}
+
+/**
+ * 分转元
+ */
+export const fenToYuan = (price: string | number): number => {
+  return formatToFraction(price)
+}
+
+/**
+ * 计算环比
+ *
+ * @param value 当前数值
+ * @param reference 对比数值
+ */
+export const calculateRelativeRate = (value?: number, reference?: number) => {
+  // 防止除0
+  if (!reference) return 0
+
+  return ((100 * ((value || 0) - reference)) / reference).toFixed(0)
 }

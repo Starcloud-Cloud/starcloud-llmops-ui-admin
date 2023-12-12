@@ -87,6 +87,9 @@
           >
             删除
           </el-button>
+          <el-button link @click="handlePush(scope.row.id)" v-hasPermi="['system:notice:update']">
+            推送
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -102,11 +105,14 @@
   <!-- 表单弹窗：添加/修改 -->
   <NoticeForm ref="formRef" @success="getList" />
 </template>
-<script setup lang="tsx" name="SystemNotice">
+<script lang="ts" setup>
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
 import { dateFormatter } from '@/utils/formatTime'
 import * as NoticeApi from '@/api/system/notice'
 import NoticeForm from './NoticeForm.vue'
+
+defineOptions({ name: 'SystemNotice' })
+
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 
@@ -162,6 +168,17 @@ const handleDelete = async (id: number) => {
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
+  } catch {}
+}
+
+/** 推送按钮操作 */
+const handlePush = async (id: number) => {
+  try {
+    // 推送的二次确认
+    await message.confirm('是否推送所选中通知？')
+    // 发起推送
+    await NoticeApi.pushNotice(id)
+    message.success(t('推送成功'))
   } catch {}
 }
 

@@ -3,6 +3,7 @@ interface TreeHelperConfig {
   children: string
   pid: string
 }
+
 const DEFAULT_CONFIG: TreeHelperConfig = {
   id: 'id',
   children: 'children',
@@ -11,7 +12,9 @@ const DEFAULT_CONFIG: TreeHelperConfig = {
 export const defaultProps = {
   children: 'children',
   label: 'name',
-  value: 'id'
+  value: 'id',
+  isLeaf: 'leaf',
+  emitPath: false // 用于 cascader 组件：在选中节点改变时，是否返回由该节点所在的各级菜单的值所组成的数组，若设置 false，则只返回该节点的值
 }
 
 const getConfig = (config: Partial<TreeHelperConfig>) => Object.assign({}, DEFAULT_CONFIG, config)
@@ -132,6 +135,7 @@ export const filter = <T = any>(
 ): T[] => {
   config = getConfig(config)
   const children = config.children as string
+
   function listFilter(list: T[]) {
     return list
       .map((node: any) => ({ ...node }))
@@ -140,6 +144,7 @@ export const filter = <T = any>(
         return func(node) || (node[children] && node[children].length)
       })
   }
+
   return listFilter(tree)
 }
 
@@ -263,6 +268,7 @@ export const handleTree = (data: any[], id?: string, parentId?: string, children
       }
     }
   }
+
   return tree
 }
 
@@ -300,4 +306,95 @@ export const handleTree2 = (data, id, parentId, children, rootId) => {
     return father[parentId] === rootId
   })
   return treeData !== '' ? treeData : data
+}
+
+/**
+ * 校验选中的节点，是否为指定 level
+ *
+ * @param tree 要操作的树结构数据
+ * @param nodeId 需要判断在什么层级的数据
+ * @param level 检查的级别, 默认检查到二级
+ * @return true 是；false 否
+ */
+export const checkSelectedNode = (tree: any[], nodeId: any, level = 2): boolean => {
+  if (typeof tree === 'undefined' || !Array.isArray(tree) || tree.length === 0) {
+    console.warn('tree must be an array')
+    return false
+  }
+
+  // 校验是否是一级节点
+  if (tree.some((item) => item.id === nodeId)) {
+    return false
+  }
+
+  // 递归计数
+  let count = 1
+
+  // 深层次校验
+  function performAThoroughValidation(arr: any[]): boolean {
+    count += 1
+    for (const item of arr) {
+      if (item.id === nodeId) {
+        return true
+      } else if (typeof item.children !== 'undefined' && item.children.length !== 0) {
+        if (performAThoroughValidation(item.children)) {
+          return true
+        }
+      }
+    }
+    return false
+  }
+
+  for (const item of tree) {
+    count = 1
+    if (performAThoroughValidation(item.children)) {
+      // 找到后对比是否是期望的层级
+      if (count >= level) {
+        return true
+      }
+    }
+  }
+
+  return false
+}
+
+/**
+ * 获取节点的完整结构
+ * @param tree 树数据
+ * @param nodeId 节点 id
+ */
+export const treeToString = (tree: any[], nodeId) => {
+  if (typeof tree === 'undefined' || !Array.isArray(tree) || tree.length === 0) {
+    console.warn('tree must be an array')
+    return ''
+  }
+  // 校验是否是一级节点
+  const node = tree.find((item) => item.id === nodeId)
+  if (typeof node !== 'undefined') {
+    return node.name
+  }
+  let str = ''
+
+  function performAThoroughValidation(arr) {
+    for (const item of arr) {
+      if (item.id === nodeId) {
+        str += ` / ${item.name}`
+        return true
+      } else if (typeof item.children !== 'undefined' && item.children.length !== 0) {
+        str += ` / ${item.name}`
+        if (performAThoroughValidation(item.children)) {
+          return true
+        }
+      }
+    }
+    return false
+  }
+
+  for (const item of tree) {
+    str = `${item.name}`
+    if (performAThoroughValidation(item.children)) {
+      break
+    }
+  }
+  return str
 }

@@ -21,10 +21,12 @@
   </div>
 </template>
 
-<script lang="ts" name="SystemUserDeptTree" setup>
+<script lang="ts" setup>
 import { ElTree } from 'element-plus'
 import * as DeptApi from '@/api/system/dept'
 import { defaultProps, handleTree } from '@/utils/tree'
+
+defineOptions({ name: 'SystemUserDeptTree' })
 
 const deptName = ref('')
 const deptList = ref<Tree[]>([]) // 树形结构
@@ -48,6 +50,11 @@ const handleNodeClick = async (row: { [key: string]: any }) => {
   emits('node-click', row)
 }
 const emits = defineEmits(['node-click'])
+
+/** 监听deptName */
+watch(deptName, (val) => {
+  treeRef.value!.filter(val)
+})
 
 /** 初始化 */
 onMounted(async () => {

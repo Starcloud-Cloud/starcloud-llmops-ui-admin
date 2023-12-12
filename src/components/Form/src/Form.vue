@@ -1,16 +1,16 @@
 <script lang="tsx">
-import { PropType, defineComponent, ref, computed, unref, watch, onMounted } from 'vue'
-import { ElForm, ElFormItem, ElRow, ElCol, ElTooltip } from 'element-plus'
+import { computed, defineComponent, onMounted, PropType, ref, unref, watch } from 'vue'
+import { ElCol, ElForm, ElFormItem, ElRow, ElTooltip } from 'element-plus'
 import { componentMap } from './componentMap'
 import { propTypes } from '@/utils/propTypes'
 import { getSlot } from '@/utils/tsxHelper'
 import {
-  setTextPlaceholder,
-  setGridProp,
-  setComponentProps,
-  setItemComponentSlots,
   initModel,
-  setFormItemSlots
+  setComponentProps,
+  setFormItemSlots,
+  setGridProp,
+  setItemComponentSlots,
+  setTextPlaceholder
 } from './helper'
 import { useRenderSelect } from './components/useRenderSelect'
 import { useRenderRadio } from './components/useRenderRadio'
@@ -27,6 +27,7 @@ const { getPrefixCls } = useDesign()
 const prefixCls = getPrefixCls('form')
 
 export default defineComponent({
+  // eslint-disable-next-line vue/no-reserved-component-names
   name: 'Form',
   props: {
     // 生成Form的布局结构数组
@@ -196,13 +197,13 @@ export default defineComponent({
               <span>{item.label}</span>
               <ElTooltip placement="right" raw-content>
                 {{
-                  content: () => <span v-html={item.labelMessage}></span>,
+                  content: () => <span v-dompurify-html={item.labelMessage}></span>,
                   default: () => (
                     <Icon
                       icon="ep:warning"
                       size={16}
                       color="var(--el-color-primary)"
-                      class="ml-2px relative top-1px"
+                      class="relative top-1px ml-2px"
                     ></Icon>
                   )
                 }}

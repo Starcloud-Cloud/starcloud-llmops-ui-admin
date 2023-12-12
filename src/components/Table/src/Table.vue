@@ -9,6 +9,7 @@ import { set } from 'lodash-es'
 import { Pagination, TableColumn, TableSetPropsType, TableSlotDefault } from '@/types/table'
 
 export default defineComponent({
+  // eslint-disable-next-line vue/no-reserved-component-names
   name: 'Table',
   props: {
     pageSize: propTypes.number.def(10),
@@ -288,7 +289,7 @@ export default defineComponent({
           <ElPagination
             v-model:pageSize={pageSizeRef.value}
             v-model:currentPage={currentPageRef.value}
-            class="float-right mt-15px mb-15px"
+            class="float-right mb-15px mt-15px"
             {...unref(pagination)}
           ></ElPagination>
         ) : undefined}
@@ -299,11 +300,12 @@ export default defineComponent({
 </script>
 <style lang="scss" scoped>
 :deep(.el-button.is-text) {
-  margin-left: 0;
   padding: 8px 4px;
+  margin-left: 0;
 }
+
 :deep(.el-button.is-link) {
-  margin-left: 0;
   padding: 8px 4px;
+  margin-left: 0;
 }
 </style>

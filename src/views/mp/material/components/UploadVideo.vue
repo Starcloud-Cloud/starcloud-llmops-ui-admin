@@ -47,7 +47,7 @@
   </el-dialog>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import type {
   FormInstance,
   FormRules,
@@ -58,6 +58,8 @@ import type {
 import { HEADERS, UploadData, UPLOAD_URL, UploadType, beforeVideoUpload } from './upload'
 
 const message = useMessage()
+
+const accountId = inject<number>('accountId')
 
 const uploadRules: FormRules = {
   title: [{ required: true, message: '请输入标题', trigger: 'blur' }],
@@ -89,7 +91,8 @@ const fileList = ref<UploadUserFile[]>([])
 const uploadData: UploadData = reactive({
   type: UploadType.Video,
   title: '',
-  introduction: ''
+  introduction: '',
+  accountId: accountId!
 })
 
 const uploadFormRef = ref<FormInstance | null>(null)

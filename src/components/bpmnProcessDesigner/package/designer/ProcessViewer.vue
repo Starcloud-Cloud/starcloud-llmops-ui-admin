@@ -6,10 +6,15 @@
   </div>
 </template>
 
-<script setup lang="ts" name="MyProcessViewer">
+<script lang="ts" setup>
 import BpmnViewer from 'bpmn-js/lib/Viewer'
 import DefaultEmptyXML from './plugins/defaultEmpty'
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
+import { formatDate } from '@/utils/formatTime'
+import { isEmpty } from '@/utils/is'
+
+defineOptions({ name: 'MyProcessViewer' })
+
 const props = defineProps({
   value: {
     // BPMN XML 字符串
@@ -81,6 +86,7 @@ const createNewDiagram = async (xml) => {
     // console.error(`[Process Designer Warn]: ${e?.message || e}`);
   }
 }
+
 /* 高亮流程图 */
 // TODO 芋艿：如果多个 endActivity 的话，目前的逻辑可能有一定的问题。https://www.jdon.com/workflow/multi-events.html
 const highlightDiagram = async () => {
@@ -93,6 +99,9 @@ const highlightDiagram = async () => {
   let canvas = bpmnModeler.get('canvas')
   let todoActivity: any = activityList.find((m: any) => !m.endTime) // 找到待办的任务
   let endActivity: any = activityList[activityList.length - 1] // 获得最后一个任务
+  let findProcessTask = false //是否已经高亮了进行中的任务
+  //进行中高亮之后的任务 key 集合，用于过滤掉 taskList 进行中后面的任务，避免进行中后面的数据 Hover 还有数据
+  let removeTaskDefinitionKeyList = []
   // debugger
   bpmnModeler.getDefinitions().rootElements[0].flowElements?.forEach((n: any) => {
     let activity: any = activityList.find((m: any) => m.key === n.id) // 找到对应的活动
@@ -106,9 +115,17 @@ const highlightDiagram = async () => {
       if (!task) {
         return
       }
+      //进行中的任务已经高亮过了，则不高亮后面的任务了
+      if (findProcessTask) {
+        removeTaskDefinitionKeyList.push(n.id)
+        return
+      }
       // 高亮任务
       canvas.addMarker(n.id, getResultCss(task.result))
-
+      //标记是否高亮了进行中任务
+      if (task.result === 1) {
+        findProcessTask = true
+      }
       // 如果非通过，就不走后面的线条了
       if (task.result !== 2) {
         return
@@ -208,6 +225,11 @@ const highlightDiagram = async () => {
       }
     }
   })
+  if (!isEmpty(removeTaskDefinitionKeyList)) {
+    taskList.value = taskList.value.filter(
+      (item) => !removeTaskDefinitionKeyList.includes(item.definitionKey)
+    )
+  }
 }
 const getActivityHighlightCss = (activity) => {
   return activity.endTime ? 'highlight' : 'highlight-todo'
@@ -225,6 +247,15 @@ const getResultCss = (result) => {
   } else if (result === 4) {
     // 已取消
     return 'highlight-cancel'
+  } else if (result === 5) {
+    // 退回
+    return 'highlight-return'
+  } else if (result === 6) {
+    // 委派
+    return 'highlight-return'
+  } else if (result === 7 || result === 8 || result === 9) {
+    // 待后加签任务完成/待前加签任务完成/待前置任务完成
+    return 'highlight-return'
   }
   return ''
 }
@@ -269,9 +300,9 @@ const elementHover = (element) => {
   console.log(element.value, 'element.value')
   const activity = activityLists.value.find((m) => m.key === element.value.id)
   console.log(activity, 'activityactivityactivityactivity')
-  // if (!activity) {
-  //   return
-  // }
+  if (!activity) {
+    return
+  }
   if (!elementOverlayIds.value[element.value.id] && element.value.type !== 'bpmn:Process') {
     let html = `<div class="element-overlays">
             <p>Elemet id: ${element.value.id}</p>
@@ -337,7 +368,7 @@ const elementHover = (element) => {
       }
     }
     console.log(html, 'html111111111111111')
-    elementOverlayIds.value[element.value.id] = toRaw(overlays.value).add(element.value, {
+    elementOverlayIds.value[element.value.id] = toRaw(overlays.value)?.add(element.value, {
       position: { left: 0, bottom: 0 },
       html: `<div class="element-overlays">${html}</div>`
     })
@@ -403,6 +434,7 @@ watch(
   stroke-dasharray: 4px !important;
   fill-opacity: 0.2 !important;
 }
+
 .highlight-todo.djs-shape .djs-visual > :nth-child(1) {
   fill: #1890ff !important;
   stroke: #1890ff !important;
@@ -414,8 +446,9 @@ watch(
   stroke: #1890ff !important;
   stroke-dasharray: 4px !important;
   fill-opacity: 0.2 !important;
-  marker-end: url(#sequenceflow-end-_E7DFDF-_E7DFDF-803g1kf6zwzmcig1y2ulm5egr);
+  marker-end: url('#sequenceflow-end-_E7DFDF-_E7DFDF-803g1kf6zwzmcig1y2ulm5egr');
 }
+
 :deep(.highlight-todo.djs-shape .djs-visual > :nth-child(1)) {
   fill: #1890ff !important;
   stroke: #1890ff !important;
@@ -429,14 +462,17 @@ watch(
   stroke: green !important;
   fill-opacity: 0.2 !important;
 }
+
 .highlight.djs-shape .djs-visual > :nth-child(2) {
   fill: green !important;
 }
+
 .highlight.djs-shape .djs-visual > path {
   fill: green !important;
   fill-opacity: 0.2 !important;
   stroke: green !important;
 }
+
 .highlight.djs-connection > .djs-visual > path {
   stroke: green !important;
 }
@@ -450,14 +486,17 @@ watch(
   stroke: green !important;
   fill-opacity: 0.2 !important;
 }
+
 :deep(.highlight.djs-shape .djs-visual > :nth-child(2)) {
   fill: green !important;
 }
+
 :deep(.highlight.djs-shape .djs-visual > path) {
   fill: green !important;
   fill-opacity: 0.2 !important;
   stroke: green !important;
 }
+
 :deep(.highlight.djs-connection > .djs-visual > path) {
   stroke: green !important;
 }
@@ -468,14 +507,17 @@ watch(
   stroke: red !important;
   fill-opacity: 0.2 !important;
 }
+
 .highlight-reject.djs-shape .djs-visual > :nth-child(2) {
   fill: red !important;
 }
+
 .highlight-reject.djs-shape .djs-visual > path {
   fill: red !important;
   fill-opacity: 0.2 !important;
   stroke: red !important;
 }
+
 .highlight-reject.djs-connection > .djs-visual > path {
   stroke: red !important;
 }
@@ -489,14 +531,17 @@ watch(
   stroke: red !important;
   fill-opacity: 0.2 !important;
 }
+
 :deep(.highlight-reject.djs-shape .djs-visual > :nth-child(2)) {
   fill: red !important;
 }
+
 :deep(.highlight-reject.djs-shape .djs-visual > path) {
   fill: red !important;
   fill-opacity: 0.2 !important;
   stroke: red !important;
 }
+
 :deep(.highlight-reject.djs-connection > .djs-visual > path) {
   stroke: red !important;
 }
@@ -507,14 +552,17 @@ watch(
   stroke: grey !important;
   fill-opacity: 0.2 !important;
 }
+
 .highlight-cancel.djs-shape .djs-visual > :nth-child(2) {
   fill: grey !important;
 }
+
 .highlight-cancel.djs-shape .djs-visual > path {
   fill: grey !important;
   fill-opacity: 0.2 !important;
   stroke: grey !important;
 }
+
 .highlight-cancel.djs-connection > .djs-visual > path {
   stroke: grey !important;
 }
@@ -528,24 +576,72 @@ watch(
   stroke: grey !important;
   fill-opacity: 0.2 !important;
 }
+
 :deep(.highlight-cancel.djs-shape .djs-visual > :nth-child(2)) {
   fill: grey !important;
 }
+
 :deep(.highlight-cancel.djs-shape .djs-visual > path) {
   fill: grey !important;
   fill-opacity: 0.2 !important;
   stroke: grey !important;
 }
+
 :deep(.highlight-cancel.djs-connection > .djs-visual > path) {
   stroke: grey !important;
 }
 
+/** 回退 */
+.highlight-return.djs-shape .djs-visual > :nth-child(1) {
+  fill: #e6a23c !important;
+  stroke: #e6a23c !important;
+  fill-opacity: 0.2 !important;
+}
+
+.highlight-return.djs-shape .djs-visual > :nth-child(2) {
+  fill: #e6a23c !important;
+}
+
+.highlight-return.djs-shape .djs-visual > path {
+  fill: #e6a23c !important;
+  fill-opacity: 0.2 !important;
+  stroke: #e6a23c !important;
+}
+
+.highlight-return.djs-connection > .djs-visual > path {
+  stroke: #e6a23c !important;
+}
+
+.highlight-return:not(.djs-connection) .djs-visual > :nth-child(1) {
+  fill: #e6a23c !important; /* color elements as green */
+}
+
+:deep(.highlight-return.djs-shape .djs-visual > :nth-child(1)) {
+  fill: #e6a23c !important;
+  stroke: #e6a23c !important;
+  fill-opacity: 0.2 !important;
+}
+
+:deep(.highlight-return.djs-shape .djs-visual > :nth-child(2)) {
+  fill: #e6a23c !important;
+}
+
+:deep(.highlight-return.djs-shape .djs-visual > path) {
+  fill: #e6a23c !important;
+  fill-opacity: 0.2 !important;
+  stroke: #e6a23c !important;
+}
+
+:deep(.highlight-return.djs-connection > .djs-visual > path) {
+  stroke: #e6a23c !important;
+}
+
 .element-overlays {
-  box-sizing: border-box;
-  padding: 8px;
-  background: rgba(0, 0, 0, 0.6);
-  border-radius: 4px;
-  color: #fafafa;
   width: 200px;
+  padding: 8px;
+  color: #fafafa;
+  background: rgb(0 0 0 / 60%);
+  border-radius: 4px;
+  box-sizing: border-box;
 }
 </style>

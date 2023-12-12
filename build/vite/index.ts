@@ -1,7 +1,6 @@
 import { resolve } from 'path'
 import Vue from '@vitejs/plugin-vue'
 import VueJsx from '@vitejs/plugin-vue-jsx'
-import WindiCSS from 'vite-plugin-windicss'
 import progress from 'vite-plugin-progress'
 import EslintPlugin from 'vite-plugin-eslint'
 import PurgeIcons from 'vite-plugin-purge-icons'
@@ -13,9 +12,9 @@ import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import viteCompression from 'vite-plugin-compression'
 import topLevelAwait from 'vite-plugin-top-level-await'
-import vueSetupExtend from 'vite-plugin-vue-setup-extend-plus'
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
+import UnoCSS from 'unocss/vite'
 
 export function createVitePlugins() {
   const root = process.cwd()
@@ -28,10 +27,9 @@ export function createVitePlugins() {
   return [
     Vue(),
     VueJsx(),
-    WindiCSS(),
+    UnoCSS(),
     progress(),
     PurgeIcons(),
-    vueSetupExtend(),
     ElementPlus({}),
     AutoImport({
       include: [
@@ -62,18 +60,11 @@ export function createVitePlugins() {
       }
     }),
     Components({
-      // 要搜索组件的目录的相对路径
-      dirs: ['src/components'],
-      // 组件的有效文件扩展名
-      extensions: ['vue', 'md'],
-      // 搜索子目录
-      deep: true,
-      include: [/\.vue$/, /\.vue\?vue/],
       // 生成自定义 `auto-components.d.ts` 全局声明
       dts: 'src/types/auto-components.d.ts',
       // 自定义组件的解析器
       resolvers: [ElementPlusResolver()],
-      exclude: [/[\\/]node_modules[\\/]/]
+      globs: ["src/components/**/**.{vue, md}", '!src/components/DiyEditor/components/mobile/**']
     }),
     EslintPlugin({
       cache: false,

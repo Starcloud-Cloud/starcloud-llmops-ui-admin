@@ -1,4 +1,4 @@
-<script lang="ts" name="Editor" setup>
+<script lang="ts" setup>
 import { PropType } from 'vue'
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 import { i18nChangeLanguage, IDomEditor, IEditorConfig } from '@wangeditor/editor'
@@ -7,6 +7,8 @@ import { isNumber } from '@/utils/is'
 import { ElMessage } from 'element-plus'
 import { useLocaleStore } from '@/store/modules/locale'
 import { getAccessToken, getTenantId } from '@/utils/auth'
+
+defineOptions({ name: 'Editor' })
 
 type InsertFnType = (url: string, alt: string, href: string) => void
 
@@ -162,7 +164,6 @@ const handleChange = (editor: IDomEditor) => {
 // 组件销毁时，及时销毁编辑器
 onBeforeUnmount(() => {
   const editor = unref(editorRef.value)
-  if (editor === null) return
 
   // 销毁，并移除 editor
   editor?.destroy()
@@ -179,12 +180,12 @@ defineExpose({
 </script>
 
 <template>
-  <div class="border-1 border-solid border-[var(--tags-view-border-color)] z-99">
+  <div class="z-99 border-1 border-[var(--el-border-color)] border-solid">
     <!-- 工具栏 -->
     <Toolbar
       :editor="editorRef"
       :editorId="editorId"
-      class="border-bottom-1 border-solid border-[var(--tags-view-border-color)]"
+      class="border-0 b-b-1 border-[var(--el-border-color)] border-solid"
     />
     <!-- 编辑器 -->
     <Editor

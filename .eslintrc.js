@@ -22,9 +22,10 @@ module.exports = defineConfig({
     'plugin:@typescript-eslint/recommended',
     'prettier',
     'plugin:prettier/recommended',
-    './.eslintrc-auto-import.json'
+    '@unocss'
   ],
   rules: {
+    'vue/no-setup-props-destructure': 'off',
     'vue/script-setup-uses-vars': 'error',
     'vue/no-reserved-component-names': 'off',
     '@typescript-eslint/ban-ts-ignore': 'off',
@@ -39,8 +40,8 @@ module.exports = defineConfig({
     '@typescript-eslint/ban-types': 'off',
     '@typescript-eslint/no-non-null-assertion': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
-    '@typescript-eslint/no-unused-vars': 'error',
-    'no-unused-vars': 'error',
+    '@typescript-eslint/no-unused-vars': 'off',
+    'no-unused-vars': 'off',
     'space-before-function-paren': 'off',
 
     'vue/attributes-order': 'off',
@@ -52,6 +53,7 @@ module.exports = defineConfig({
     'vue/attribute-hyphenation': 'off',
     'vue/require-default-prop': 'off',
     'vue/require-explicit-emits': 'off',
+    'vue/require-toggle-inside-transition': 'off',
     'vue/html-self-closing': [
       'error',
       {
@@ -64,6 +66,8 @@ module.exports = defineConfig({
         math: 'always'
       }
     ],
-    'vue/multi-word-component-names': 'off'
+    'vue/multi-word-component-names': 'off',
+    'vue/no-v-html': 'off',
+    'prettier/prettier': 'off' // 芋艿：默认关闭 prettier 的 ESLint 校验，因为我们使用的是 IDE 的 Prettier 插件
   }
 })

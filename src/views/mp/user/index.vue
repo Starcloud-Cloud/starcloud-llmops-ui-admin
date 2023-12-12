@@ -99,7 +99,7 @@
   <!-- 表单弹窗：修改 -->
   <UserForm ref="formRef" @success="getList" />
 </template>
-<script lang="ts" setup name="MpUser">
+<script lang="ts" setup>
 import { dateFormatter } from '@/utils/formatTime'
 import * as MpUserApi from '@/api/mp/user'
 import * as MpTagApi from '@/api/mp/tag'
@@ -107,33 +107,28 @@ import WxAccountSelect from '@/views/mp/components/wx-account-select'
 import type { FormInstance } from 'element-plus'
 import UserForm from './UserForm.vue'
 
+defineOptions({ name: 'MpUser' })
+
 const message = useMessage() // 消息
 
 const loading = ref(true) // 列表的加载中
 const total = ref(0) // 列表的总页数
 const list = ref<any[]>([]) // 列表的数据
 
-interface QueryParams {
-  pageNo: number
-  pageSize: number
-  accountId: number
-  openid: string | null
-  nickname: string | null
-}
-const queryParams: QueryParams = reactive({
+const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
-  accountId: 0,
-  openid: null,
-  nickname: null
+  accountId: -1,
+  openid: '',
+  nickname: ''
 })
 const queryFormRef = ref<FormInstance | null>(null) // 搜索的表单
 const tagList = ref<any[]>([]) // 公众号标签列表
 
 /** 侦听公众号变化 **/
 const onAccountChanged = (id: number) => {
-  queryParams.pageNo = 1
   queryParams.accountId = id
+  queryParams.pageNo = 1
   getList()
 }
 

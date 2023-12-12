@@ -1,7 +1,9 @@
-<script lang="ts" name="Logo" setup>
+<script lang="ts" setup>
 import { computed, onMounted, ref, unref, watch } from 'vue'
 import { useAppStore } from '@/store/modules/app'
 import { useDesign } from '@/hooks/web/useDesign'
+
+defineOptions({ name: 'Logo' })
 
 const { getPrefixCls } = useDesign()
 
@@ -60,13 +62,12 @@ watch(
       :class="[
         prefixCls,
         layout !== 'classic' ? `${prefixCls}__Top` : '',
-        'flex !h-[var(--logo-height)] items-center cursor-pointer justify-center relative',
-        'dark:bg-[var(--el-bg-color)]'
+        'flex !h-[var(--logo-height)] items-center cursor-pointer pl-8px relative decoration-none overflow-hidden'
       ]"
       to="/"
     >
       <img
-        class="w-[calc(var(--logo-height)-10px)] h-[calc(var(--logo-height)-10px)]"
+        class="h-[calc(var(--logo-height)-10px)] w-[calc(var(--logo-height)-10px)]"
         src="@/assets/imgs/logo.png"
       />
       <div

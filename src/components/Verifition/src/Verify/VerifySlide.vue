@@ -9,7 +9,7 @@
         <img
           :src="'data:image/png;base64,' + backImgBase"
           alt=""
-          style="width: 100%; height: 100%; display: block"
+          style="display: block; width: 100%; height: 100%"
         />
         <div v-show="showRefresh" class="verify-refresh" @click="refresh">
           <i class="iconfont icon-refresh"></i>
@@ -63,7 +63,7 @@
             <img
               :src="'data:image/png;base64,' + blockBackImgBase"
               alt=""
-              style="width: 100%; height: 100%; display: block; -webkit-user-drag: none"
+              style="display: block; width: 100%; height: 100%; -webkit-user-drag: none"
             />
           </div>
         </div>
@@ -71,7 +71,7 @@
     </div>
   </div>
 </template>
-<script name="VerifySlide" setup type="text/babel">
+<script setup type="text/babel">
 /**
  * VerifySlide
  * @description 滑块
@@ -277,7 +277,7 @@ const end = () => {
   endMovetime.value = +new Date()
   //判断是否重合
   if (status.value && isEnd.value == false) {
-    var moveLeftDistance = parseInt((moveBlockLeft.value || '').replace('px', ''))
+    var moveLeftDistance = parseInt((moveBlockLeft.value || '0').replace('px', ''))
     moveLeftDistance = (moveLeftDistance * 310) / parseInt(setSize.imgWidth)
     let data = {
       captchaType: captchaType.value,

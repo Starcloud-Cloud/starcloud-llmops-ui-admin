@@ -1,4 +1,4 @@
-<script lang="ts" name="Qrcode" setup>
+<script lang="ts" setup>
 import { computed, nextTick, PropType, ref, unref, watch } from 'vue'
 import QRCode, { QRCodeRenderersOptions } from 'qrcode'
 import { cloneDeep } from 'lodash-es'
@@ -6,6 +6,8 @@ import { propTypes } from '@/utils/propTypes'
 import { useDesign } from '@/hooks/web/useDesign'
 import { isString } from '@/utils/is'
 import { QrcodeLogo } from '@/types/qrcode'
+
+defineOptions({ name: 'Qrcode' })
 
 const props = defineProps({
   // img 或者 canvas,img不支持logo嵌套
@@ -225,10 +227,10 @@ const disabledClick = () => {
     <div
       v-if="disabled"
       :class="`${prefixCls}--disabled`"
-      class="absolute top-0 left-0 flex w-full h-full items-center justify-center"
+      class="absolute left-0 top-0 h-full w-full flex items-center justify-center"
       @click="disabledClick"
     >
-      <div class="absolute top-[50%] left-[50%] font-bold">
+      <div class="absolute left-[50%] top-[50%] font-bold">
         <Icon :size="30" color="var(--el-color-primary)" icon="ep:refresh-right" />
         <div>{{ disabledText }}</div>
       </div>
@@ -241,7 +243,7 @@ $prefix-cls: #{$namespace}-qrcode;
 
 .#{$prefix-cls} {
   &--disabled {
-    background: rgba(255, 255, 255, 0.95);
+    background: rgb(255 255 255 / 95%);
 
     & > div {
       transform: translate(-50%, -50%);

@@ -45,8 +45,8 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list">
-      <el-table-column label="编号" align="center" prop="id" />
-      <el-table-column label="名称" align="center" prop="name" :show-overflow-tooltip="true" />
+      <el-table-column label="编号" align="center" min-width="60" prop="id" />
+      <el-table-column label="属性值名称" align="center" min-width="150" prop="name" />
       <el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true" />
       <el-table-column
         label="创建时间"
@@ -88,10 +88,14 @@
   <!-- 表单弹窗：添加/修改 -->
   <ValueForm ref="formRef" @success="getList" />
 </template>
-<script setup lang="ts" name="ProductPropertyValue">
+<script lang="ts" setup>
 import { dateFormatter } from '@/utils/formatTime'
-import * as PropertyApi from '@/api/mall/product/property'
+//import * as PropertyApi from '@/api/mall/product/property'
+import * as PropertyApi from '@/api/mall/product/newProperty'
 import ValueForm from './ValueForm.vue'
+
+defineOptions({ name: 'ProductPropertyValue' })
+
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 const { params } = useRoute() // 查询参数
@@ -144,7 +148,7 @@ const handleDelete = async (id: number) => {
     // 删除的二次确认
     await message.delConfirm()
     // 发起删除
-    await PropertyApi.deleteProperty(id)
+    await PropertyApi.deletePropertyValue(id)
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()

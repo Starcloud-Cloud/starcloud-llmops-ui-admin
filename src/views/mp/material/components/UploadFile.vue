@@ -18,7 +18,7 @@
     </template>
   </el-upload>
 </template>
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { UploadProps, UploadUserFile } from 'element-plus'
 import {
   HEADERS,
@@ -33,6 +33,8 @@ const message = useMessage()
 
 const props = defineProps<{ type: UploadType }>()
 
+const accountId = inject<number>('accountId')
+
 const fileList = ref<UploadUserFile[]>([])
 const emit = defineEmits<{
   (e: 'uploaded', v: void)
@@ -41,7 +43,8 @@ const emit = defineEmits<{
 const uploadData: UploadData = reactive({
   type: UploadType.Image,
   title: '',
-  introduction: ''
+  introduction: '',
+  accountId: accountId!
 })
 
 /** 上传前检查 */
