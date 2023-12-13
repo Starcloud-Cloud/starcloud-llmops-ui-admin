@@ -6,6 +6,7 @@ WORKDIR /usr/src/app/
 USER root
 COPY package.json ./
 
+RUN npm config set registry https://registry.npmmirror.com
 RUN npm i pnpm -g
 
 RUN pnpm config set registry https://registry.npmmirror.com
@@ -13,7 +14,8 @@ RUN pnpm install
 
 COPY ./ ./
 
-RUN npm run build:${NODE_ENV}
+# RUN npm run build:${NODE_ENV}
+RUN npm run build:cn-test
 
 
 FROM nginx
