@@ -9,7 +9,7 @@ COPY package.json ./
 RUN npm i pnpm -g
 
 RUN pnpm config set registry https://registry.npmmirror.com
-RUN pnpm
+RUN pnpm install
 
 COPY ./ ./
 
