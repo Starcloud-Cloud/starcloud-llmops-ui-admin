@@ -139,7 +139,6 @@
   },
   "homepage": "https://gitee.com/yudaocode/yudao-ui-admin-vue3",
   "engines": {
-    "node": ">= 16.0.0",
-    "pnpm": ">=8.6.0"
+    "node": ">= 16.0.0"
   }
 }
