@@ -11,8 +11,8 @@ RUN yarn
 
 COPY ./ ./
 
-# RUN npm run build:${NODE_ENV}
-RUN npm run build:cn-test
+RUN npm run build:${NODE_ENV}
+# RUN npm run build:cn-test
 
 
 FROM nginx
