@@ -7,7 +7,7 @@ VITE_DEV=false
 VITE_BASE_URL='http://llmops-ui-admin.hotsalestar.com'
 
 # 上传路径
-VITE_UPLOAD_URL='http://localhost:48080/admin-api/infra/file/upload'
+VITE_UPLOAD_URL='http://llmops-ui-admin.hotsalestar.com/admin-api/infra/file/upload'
 
 # 接口前缀
 VITE_API_BASEPATH=

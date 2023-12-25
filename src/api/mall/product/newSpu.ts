@@ -44,6 +44,7 @@ export interface Spu {
   specType?: boolean // 商品规格
   subCommissionType?: boolean // 分销类型
   skus?: Sku[] // sku数组
+  giveRights?:any
   description?: string // 商品详情
   sort?: number // 商品排序
   giveIntegral?: number // 赠送积分

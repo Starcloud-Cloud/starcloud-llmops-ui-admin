@@ -112,3 +112,8 @@ export const exportSpu = async (params) => {
 export const getSpuSimpleList = async () => {
   return request.get({ url: '/product/spu/list-all-simple' })
 }
+
+// 获得用户等级列表
+export const levelList = async () => {
+  return request.get({ url: '/admin/level/list-all-simple' })
+}
