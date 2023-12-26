@@ -5,7 +5,6 @@ VITE_DEV=false
 
 # 请求路径
 VITE_BASE_URL='http://llmops-ui-admin.hotsalestar.com'
-
 # 上传路径
 VITE_UPLOAD_URL='http://llmops-ui-admin.hotsalestar.com/admin-api/infra/file/upload'
 
@@ -28,4 +27,4 @@ VITE_SOURCEMAP=false
 VITE_BASE_PATH=/
 
 # 输出路径
-VITE_OUT_DIR=dist-pro
+VITE_OUT_DIR=dist
