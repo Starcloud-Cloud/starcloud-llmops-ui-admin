@@ -16,6 +16,7 @@
         <el-col :span="12">
           <el-form-item label="归属部门" prop="deptId">
             <el-tree-select
+            filterable
               v-model="formData.deptId"
               :data="deptList"
               :props="defaultProps"
