@@ -4,9 +4,9 @@ NODE_ENV=production
 VITE_DEV=false
 
 # 请求路径
-VITE_BASE_URL='http://llmops-ui-admin.hotsalestar.com'
+VITE_BASE_URL='https://llmops-ui-admin.hotsalestar.com'
 # 上传路径
-VITE_UPLOAD_URL='http://llmops-ui-admin.hotsalestar.com/admin-api/infra/file/upload'
+VITE_UPLOAD_URL='https://llmops-ui-admin.hotsalestar.com/admin-api/infra/file/upload'
 
 # 接口前缀
 VITE_API_BASEPATH=
