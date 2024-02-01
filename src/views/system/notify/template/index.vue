@@ -151,9 +151,11 @@
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <NotifyTemplateForm ref="formRef" @success="getList" />
+  <NotifyTemplateForm ref="formRef" :templateList="templateList" :mediaList="mediaList" @success="getList" />
   <!-- 表单弹窗：测试发送 -->
   <NotifyTemplateSendForm ref="sendFormRef" />
+  <!-- 表单弹窗：new测试发送 -->
+  <NewNotifyTemplateSendForm ref="newSendFormRef" :templateList="templateList" />
 </template>
 <script lang="ts" setup>
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
@@ -161,11 +163,14 @@ import { dateFormatter } from '@/utils/formatTime'
 import * as NotifyTemplateApi from '@/api/system/notify/template'
 import NotifyTemplateForm from './NotifyTemplateForm.vue'
 import NotifyTemplateSendForm from './NotifyTemplateSendForm.vue'
+import NewNotifyTemplateSendForm from './newNotifyTemplateSendForm.vue'
 
 defineOptions({ name: 'NotifySmsTemplate' })
 
 const message = useMessage() // 消息弹窗
 
+const templateList = ref([])//模板列表
+const mediaList = ref([])//
 const loading = ref(false) // 列表的加载中
 const total = ref(0) // 列表的总页数
 const list = ref([]) // 列表的数据
@@ -190,7 +195,13 @@ const getList = async () => {
     loading.value = false
   }
 }
-
+//获取元数据
+const getMetadata = async () => {
+  const result = await NotifyTemplateApi.notifyMetadata()
+  templateList.value = result.template
+  mediaList.value = result.mediaTypes
+  
+}
 /** 搜索按钮操作 */
 const handleQuery = () => {
   queryParams.pageNo = 1
@@ -224,12 +235,18 @@ const handleDelete = async (id: number) => {
 
 /** 发送站内信按钮 */
 const sendFormRef = ref() // 表单 Ref
+const newSendFormRef = ref() // 表单 Ref
 const openSendForm = (row: NotifyTemplateApi.NotifyTemplateVO) => {
-  sendFormRef.value.open(row.id)
+  if(templateList.value.some((item:any)=>item.value === row.code)){
+    newSendFormRef.value.open(row.id)
+  }else{
+    sendFormRef.value.open(row.id)
+  }
 }
 
 /** 初始化 **/
 onMounted(() => {
   getList()
+  getMetadata()
 })
 </script>

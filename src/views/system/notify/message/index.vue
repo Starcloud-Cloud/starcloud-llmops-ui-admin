@@ -8,7 +8,7 @@
       :model="queryParams"
       ref="queryFormRef"
       :inline="true"
-      label-width="68px"
+      label-width="100px"
     >
       <el-form-item label="用户编号" prop="userId">
         <el-input
@@ -58,6 +58,51 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item label="模板消息状态" prop="mpTempSuccess">
+        <el-select
+          v-model="queryParams.mpTempSuccess"
+          placeholder="请选择模板消息状态"
+          clearable
+          class="!w-240px"
+        >
+        <el-option
+            v-for="dict in typeList"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="公众号状态" prop="mpSuccess">
+        <el-select
+          v-model="queryParams.mpSuccess"
+          placeholder="请选择微信公众号状态"
+          clearable
+          class="!w-240px"
+        >
+        <el-option
+            v-for="dict in typeList"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="短信状态" prop="smsSuccess">
+        <el-select
+          v-model="queryParams.smsSuccess"
+          placeholder="请选择短信状态"
+          clearable
+          class="!w-240px"
+        >
+        <el-option
+            v-for="dict in typeList"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="创建时间" prop="createTime">
         <el-date-picker
           v-model="queryParams.createTime"
@@ -80,6 +125,7 @@
   <ContentWrap>
     <el-table v-loading="loading" :data="list">
       <el-table-column label="编号" align="center" prop="id" />
+      <el-table-column label="批次" align="center" prop="batchCode"/>
       <el-table-column label="用户类型" align="center" prop="userType">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.USER_TYPE" :value="scope.row.userType" />
@@ -107,6 +153,15 @@
       <el-table-column label="模版类型" align="center" prop="templateType" width="120">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE" :value="scope.row.templateType" />
+        </template>
+      </el-table-column>
+      <el-table-column label="渠道状态" align="center" prop="templateType" width="200">
+        <template #default="scope">
+          <div class="flex flex-col items-center gap-2">
+            <el-tag :type="scope.row.smsSuccess?'success':'danger'">{{scope.row.smsSuccess?'短信发送成功':'短信发送失败'}}</el-tag>
+          <el-tag :type="scope.row.mpSuccess?'success':'danger'">{{scope.row.mpSuccess?'公众号发送成功':'公众号发送失败'}}</el-tag>
+          <el-tag :type="scope.row.mpTempSuccess?'success':'danger'">{{scope.row.mpTempSuccess?'模板消息发送成功':'模板消息发送失败'}}</el-tag>
+          </div>
         </template>
       </el-table-column>
       <el-table-column label="是否已读" align="center" prop="readStatus" width="100">
@@ -171,10 +226,17 @@ const queryParams = reactive({
   userId: undefined,
   templateCode: undefined,
   templateType: undefined,
+  smsSuccess: undefined,
+  mpSuccess: undefined,
+  mpTempSuccess: undefined,
   createTime: []
 })
 const queryFormRef = ref() // 搜索的表单
 
+const typeList = [
+  {label:'成功',value:true},
+  {label:'失败',value:false},
+]
 /** 查询列表 */
 const getList = async () => {
   loading.value = true

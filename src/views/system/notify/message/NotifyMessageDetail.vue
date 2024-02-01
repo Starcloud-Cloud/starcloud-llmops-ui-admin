@@ -28,6 +28,15 @@
       <el-descriptions-item label="模版类型">
         <dict-tag :type="DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE" :value="detailData.templateType" />
       </el-descriptions-item>
+      <el-descriptions-item label="短信状态">
+        <el-tag :type="detailData.smsSuccess?'success':'danger'">{{detailData.smsSuccess?'短信发送成功':'短信发送失败'}}</el-tag>
+      </el-descriptions-item>
+      <el-descriptions-item label="微信公众号状态">
+        <el-tag :type="detailData.mpSuccess?'success':'danger'">{{detailData.mpSuccess?'公众号发送成功':'公众号发送失败'}}</el-tag>
+      </el-descriptions-item>
+      <el-descriptions-item label="模板消息状态">
+        <el-tag :type="detailData.mpTempSuccess?'success':'danger'">{{detailData.mpTempSuccess?'模板消息发送成功':'模板消息发送失败'}}</el-tag>
+      </el-descriptions-item>
       <el-descriptions-item label="是否已读">
         <dict-tag :type="DICT_TYPE.INFRA_BOOLEAN_STRING" :value="detailData.readStatus" />
       </el-descriptions-item>

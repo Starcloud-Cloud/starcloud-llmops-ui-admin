@@ -8,7 +8,23 @@
       v-loading="formLoading"
     >
       <el-form-item label="模版编码" prop="code">
-        <el-input v-model="formData.code" placeholder="请输入模版编码" />
+        <el-select
+        class="w-full"
+    v-model="formData.code"
+    filterable
+    allow-create
+    default-first-option
+    :reserve-keyword="false"
+    placeholder="请选择模版编码"
+  >
+    <el-option
+      v-for="item in props.templateList"
+      :key="item.value"
+      :label='`${item.value}（${item.description}）`'
+      :value="item.value"
+    />
+  </el-select>
+        <!-- <el-input v-model="formData.code" placeholder="请输入模版编码" /> -->
       </el-form-item>
       <el-form-item label="模板名称" prop="name">
         <el-input v-model="formData.name" placeholder="请输入模版名称" />
@@ -28,6 +44,19 @@
             :value="dict.value"
           />
         </el-select>
+      </el-form-item>
+      <el-form-item label="发送渠道" prop="mediaTypes">
+        <el-select multiple v-model="formData.mediaTypes" placeholder="请选择发送渠道">
+          <el-option
+            v-for="dict in props.mediaList"
+            :key="dict.value"
+            :label="dict.description"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item v-if="formData.mediaTypes&&formData.mediaTypes.includes(3)" label="微信模板 Code" prop="batchCode">
+        <el-input v-model="formData.batchCode" placeholder="请输入发件人名称" />
       </el-form-item>
       <el-form-item label="开启状态" prop="status">
         <el-radio-group v-model="formData.status">
@@ -54,6 +83,18 @@
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
 import * as NotifyTemplateApi from '@/api/system/notify/template'
 import { CommonStatusEnum } from '@/utils/constants'
+import { includes } from 'lodash-es'
+const props = defineProps({
+  templateList:{
+    type:Array,
+    default:()=>[]   
+  },
+  mediaList:{
+    type:Array,
+    default:()=>[]
+  }
+})
+
 const message = useMessage() // 消息弹窗
 
 const dialogVisible = ref(false) // 弹窗的是否展示
@@ -67,14 +108,18 @@ const formData = ref<NotifyTemplateApi.NotifyTemplateVO>({
   code: '',
   content: '',
   type: null,
+  batchCode:undefined,
+  mediaTypes:[],
   params: '',
   status: CommonStatusEnum.ENABLE,
   remark: ''
 })
 const formRules = reactive({
   type: [{ required: true, message: '消息类型不能为空', trigger: 'change' }],
+  batchCode: [{ required: true, message: '模板 Code不能为空', trigger: 'blur' }],
+  mediaTypes: [{ required: true, message: '发送渠道不能为空', trigger: 'change' }],
   status: [{ required: true, message: '开启状态不能为空', trigger: 'blur' }],
-  code: [{ required: true, message: '模板编码不能为空', trigger: 'blur' }],
+  code: [{ required: true, message: '模板编码不能为空', trigger: 'change' }],
   name: [{ required: true, message: '模板名称不能为空', trigger: 'blur' }],
   nickname: [{ required: true, message: '发件人姓名不能为空', trigger: 'blur' }],
   content: [{ required: true, message: '模板内容不能为空', trigger: 'blur' }]
@@ -132,6 +177,8 @@ const resetForm = () => {
     code: '',
     content: '',
     type: null,
+    batchCode:undefined,
+    mediaTypes:[],
     params: '',
     status: CommonStatusEnum.ENABLE,
     remark: ''
