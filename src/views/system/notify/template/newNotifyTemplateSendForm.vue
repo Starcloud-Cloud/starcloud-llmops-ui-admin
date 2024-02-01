@@ -135,7 +135,7 @@ const total = ref(0)
 const tableData = ref([{name:1,valu:1}])
 defineExpose({ open }) // 提供 open 方法，用于打开弹窗
 
- 
+const selectList = ref([])
 const getList = async (code:string) => {
   const result = await NotifyTemplateApi.notifyFilterUser({
     ...page.value,
@@ -145,7 +145,7 @@ const getList = async (code:string) => {
   total.value = result.total
 }
 const handleSelectionChange = (rows) => {
-  console.log(rows);
+  selectList.value = rows
   
 }
 /** 提交表单 */
@@ -160,7 +160,7 @@ const submitForm = async () => {
     const data = formData.value
     const logId = await NotifyTemplateApi.notifyCreate({
       templateCode:data.code,
-      receiverIds:tableData.value.map((item:any)=>item.receiverId)
+      receiverIds:selectList.value.map((item:any)=>item.receiverId)
     })
     if (logId) {
       message.success('提交发送成功')
