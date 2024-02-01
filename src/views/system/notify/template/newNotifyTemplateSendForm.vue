@@ -2,10 +2,11 @@
   <Dialog v-model="dialogVisible" width="70%" title="测试发送" >
     <el-form
       ref="formRef"
+      label-position="left"
       v-loading="formLoading"
       :model="formData"
       :rules="formRules"
-      label-width="140px"
+      label-width="130px"
     >
       <el-form-item label="模板内容" prop="content">
         <el-input

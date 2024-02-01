@@ -29,13 +29,13 @@
         <dict-tag :type="DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE" :value="detailData.templateType" />
       </el-descriptions-item>
       <el-descriptions-item label="短信状态">
-        <el-tag :type="detailData.smsSuccess?'success':'danger'">{{detailData.smsSuccess?'短信发送成功':'短信发送失败'}}</el-tag>
+        <el-tag :type="getStatus(detailData.mediaTypes,1,detailData.smsSuccess,true)">{{getStatus(detailData.mediaTypes,1,detailData.smsSuccess)}}</el-tag>
       </el-descriptions-item>
       <el-descriptions-item label="微信公众号状态">
-        <el-tag :type="detailData.mpSuccess?'success':'danger'">{{detailData.mpSuccess?'公众号发送成功':'公众号发送失败'}}</el-tag>
+        <el-tag :type="getStatus(detailData.mediaTypes,2,detailData.mpSuccess,true)">{{getStatus(detailData.mediaTypes,2,detailData.mpSuccess)}}</el-tag>
       </el-descriptions-item>
       <el-descriptions-item label="模板消息状态">
-        <el-tag :type="detailData.mpTempSuccess?'success':'danger'">{{detailData.mpTempSuccess?'模板消息发送成功':'模板消息发送失败'}}</el-tag>
+        <el-tag :type="getStatus(detailData.mediaTypes,3,detailData.mpTempSuccess,true)">{{getStatus(detailData.mediaTypes,3,detailData.mpTempSuccess)}}</el-tag>
       </el-descriptions-item>
       <el-descriptions-item label="是否已读">
         <dict-tag :type="DICT_TYPE.INFRA_BOOLEAN_STRING" :value="detailData.readStatus" />
@@ -70,6 +70,52 @@ const open = async (data: NotifyMessageApi.NotifyMessageVO) => {
   } finally {
     detailLoading.value = false
   }
+}
+const getStatus = (mediaTypes,num,status,flag) => {
+  if(!flag){
+    if(mediaTypes.includes(num)){
+      if(num === 1){
+        if(status === null){
+        return '短信未发送'
+      }else if(status){
+        return '短信发送成功'
+      }else{
+        return '短信发送失败'
+      }
+      }else if(num === 2){
+        if(status === null){
+        return '公众号未发送'
+      }else if(status){
+        return '公众号发送成功'
+      }else{
+        return '公众号发送失败'
+      }
+      }else{
+        if(status === null){
+        return '微信模板消息未发送'
+      }else if(status){
+        return '微信模板消息发送成功'
+      }else{
+        return '微信模板消息发送失败'
+      }
+      }
+    }else{
+      return '不发送'
+    }
+  }else{
+    if(mediaTypes.includes(num)){
+      if(status === null){
+        return ''
+      }else if(status){
+        return 'success'
+      }else{
+        return 'danger'
+      }
+    }else{
+      return 'info'
+    }
+  }
+
 }
 defineExpose({ open }) // 提供 open 方法，用于打开弹窗
 </script>

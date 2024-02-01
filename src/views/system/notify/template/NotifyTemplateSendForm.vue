@@ -17,13 +17,7 @@
       </el-form-item>
       <el-form-item label="用户类型" prop="userType">
         <el-radio-group v-model="formData.userType">
-          <el-radio
-            v-for="dict in getIntDictOptions(DICT_TYPE.USER_TYPE)"
-            :key="dict.value"
-            :label="dict.value as number"
-          >
-            {{ dict.label }}
-          </el-radio>
+          <el-radio v-for="item in [{label: '管理员', value: 2}]" :key="item.value" :label="item.value">{{item.label}}</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item v-show="formData.userType === 1" label="接收人ID" prop="userId">
@@ -72,7 +66,7 @@ const formData = ref({
   content: '',
   params: {},
   userId: null,
-  userType: 1,
+  userType: 2,
   templateCode: '',
   templateParams: new Map()
 })
@@ -121,7 +115,7 @@ const submitForm = async () => {
   formLoading.value = true
   try {
     const data = formData.value as unknown as NotifyTemplateApi.NotifySendReqVO
-    const logId = await NotifyTemplateApi.sendNotify(data)
+    const logId = await NotifyTemplateApi.notifyCreate(data)
     if (logId) {
       message.success('提交发送成功！发送结果，见发送日志编号：' + logId)
     }
@@ -139,7 +133,7 @@ const resetForm = () => {
     mobile: '',
     templateCode: '',
     templateParams: new Map(),
-    userType: 1
+    userType: 2
   } as any
   formRef.value?.resetFields()
 }

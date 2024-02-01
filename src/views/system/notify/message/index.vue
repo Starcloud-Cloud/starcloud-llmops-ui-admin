@@ -155,12 +155,12 @@
           <dict-tag :type="DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE" :value="scope.row.templateType" />
         </template>
       </el-table-column>
-      <el-table-column label="渠道状态" align="center" prop="templateType" width="200">
+      <el-table-column label="渠道状态" align="center" width="200">
         <template #default="scope">
-          <div class="flex flex-col items-center gap-2">
-            <el-tag :type="scope.row.smsSuccess?'success':'danger'">{{scope.row.smsSuccess?'短信发送成功':'短信发送失败'}}</el-tag>
-          <el-tag :type="scope.row.mpSuccess?'success':'danger'">{{scope.row.mpSuccess?'公众号发送成功':'公众号发送失败'}}</el-tag>
-          <el-tag :type="scope.row.mpTempSuccess?'success':'danger'">{{scope.row.mpTempSuccess?'模板消息发送成功':'模板消息发送失败'}}</el-tag>
+          <div v-if="scope.row.mediaTypes" class="flex flex-col items-center gap-2">
+            <el-tag v-if="scope.row.mediaTypes.includes(1)" :type="getStatus(scope.row.mediaTypes,1,scope.row.smsSuccess,true)">{{getStatus(scope.row.mediaTypes,1,scope.row.smsSuccess)}}</el-tag>
+          <el-tag v-if="scope.row.mediaTypes.includes(2)" :type="getStatus(scope.row.mediaTypes,2,scope.row.mpSuccess,true)">{{getStatus(scope.row.mediaTypes,2,scope.row.mpSuccess)}}</el-tag>
+          <el-tag v-if="scope.row.mediaTypes.includes(3)" :type="getStatus(scope.row.mediaTypes,3,scope.row.mpTempSuccess,true)">{{getStatus(scope.row.mediaTypes,3,scope.row.mpTempSuccess)}}</el-tag>
           </div>
         </template>
       </el-table-column>
@@ -265,6 +265,54 @@ const resetQuery = () => {
 const detailRef = ref()
 const openDetail = (data: NotifyMessageApi.NotifyMessageVO) => {
   detailRef.value.open(data)
+}
+
+const getStatus = (mediaTypes,num,status,flag) => {
+  if(!flag){
+    if(mediaTypes.includes(num)){
+      if(num === 1){
+        if(status === null){
+        return '短信未发送'
+      }else if(status){
+        return '短信发送成功'
+      }else{
+        return '短信发送失败'
+      }
+      }else if(num === 2){
+        if(status === null){
+        return '公众号未发送'
+      }else if(status){
+        return '公众号发送成功'
+      }else{
+        return '公众号发送失败'
+      }
+      }else{
+        if(status === null){
+        return '微信模板消息未发送'
+      }else if(status){
+        return '微信模板消息发送成功'
+      }else{
+        return '微信模板消息发送失败'
+      }
+      }
+      
+    }else{
+      return '不发送'
+    }
+  }else{
+    if(mediaTypes.includes(num)){
+      if(status === null){
+        return ''
+      }else if(status){
+        return 'success'
+      }else{
+        return 'danger'
+      }
+    }else{
+      return 'info'
+    }
+  }
+
 }
 
 /** 初始化 **/

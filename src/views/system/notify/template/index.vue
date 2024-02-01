@@ -76,9 +76,16 @@
         label="模板编码"
         align="center"
         prop="code"
-        width="120"
+        width="200"
         :show-overflow-tooltip="true"
-      />
+      >
+      <template #default="scope">
+        {{
+          templateList.some(item=>item.value === scope.row.code)?
+          templateList.find(item=>item.value === scope.row.code).value+'（'+templateList.find(item=>item.value === scope.row.code).description+'）':scope.row.code
+          }}
+      </template>
+    </el-table-column>
       <el-table-column
         label="模板名称"
         align="center"

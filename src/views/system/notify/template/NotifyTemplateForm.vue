@@ -55,8 +55,8 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item v-if="formData.mediaTypes&&formData.mediaTypes.includes(3)" label="微信模板 Code" prop="batchCode">
-        <el-input v-model="formData.batchCode" placeholder="请输入发件人名称" />
+      <el-form-item v-if="formData.mediaTypes&&formData.mediaTypes.includes(3)" label="微信模板 Code" prop="remoteTemplateCode">
+        <el-input v-model="formData.remoteTemplateCode" placeholder="请输入发件人名称" />
       </el-form-item>
       <el-form-item label="开启状态" prop="status">
         <el-radio-group v-model="formData.status">
@@ -108,7 +108,7 @@ const formData = ref<NotifyTemplateApi.NotifyTemplateVO>({
   code: '',
   content: '',
   type: null,
-  batchCode:undefined,
+  remoteTemplateCode:undefined,
   mediaTypes:[],
   params: '',
   status: CommonStatusEnum.ENABLE,
@@ -116,7 +116,7 @@ const formData = ref<NotifyTemplateApi.NotifyTemplateVO>({
 })
 const formRules = reactive({
   type: [{ required: true, message: '消息类型不能为空', trigger: 'change' }],
-  batchCode: [{ required: true, message: '模板 Code不能为空', trigger: 'blur' }],
+  remoteTemplateCode: [{ required: true, message: '模板 Code不能为空', trigger: 'blur' }],
   mediaTypes: [{ required: true, message: '发送渠道不能为空', trigger: 'change' }],
   status: [{ required: true, message: '开启状态不能为空', trigger: 'blur' }],
   code: [{ required: true, message: '模板编码不能为空', trigger: 'change' }],
@@ -177,7 +177,7 @@ const resetForm = () => {
     code: '',
     content: '',
     type: null,
-    batchCode:undefined,
+    remoteTemplateCode:undefined,
     mediaTypes:[],
     params: '',
     status: CommonStatusEnum.ENABLE,
